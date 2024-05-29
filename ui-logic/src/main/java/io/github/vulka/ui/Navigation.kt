@@ -8,7 +8,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import io.github.vulka.ui.common.DefaultScaffold
 import io.github.vulka.ui.screens.Welcome
 import io.github.vulka.ui.screens.WelcomeScreen
 
@@ -48,9 +47,7 @@ fun VulkaNavigation() {
         }
     ) {
         composable<Welcome> {
-            DefaultScaffold {
-                WelcomeScreen(navController)
-            }
+            WelcomeScreen(navController)
         }
     }
 }

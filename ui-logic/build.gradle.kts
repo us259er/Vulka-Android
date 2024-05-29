@@ -26,7 +26,9 @@ android {
 }
 
 dependencies {
+    implementation(libs.accompanist.drawablepainter)
     implementation(libs.androidx.core.ktx)
+    implementation(libs.compose.material.icons)
     implementation(libs.compose.material3)
     implementation(libs.compose.navigation)
     implementation(libs.compose.ui)
@@ -34,6 +36,7 @@ dependencies {
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.medzik.android.components)
+    implementation(libs.medzik.android.utils)
     implementation(projects.coreApi)
     implementation(projects.vulcanImpl)
     implementation(projects.librusImpl)
