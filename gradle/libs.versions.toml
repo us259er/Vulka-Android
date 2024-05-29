@@ -1,5 +1,8 @@
 [versions]
 agp = "8.2.0"
+android-sdk-compile = "34"
+android-sdk-min = "24"
+android-sdk-target = "34"
 androidx-core = "1.13.1"
 androidx-espresso-core = "3.5.1"
 androidx-junit = "1.1.5"
