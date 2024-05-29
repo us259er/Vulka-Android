@@ -34,6 +34,8 @@ dependencies {
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.medzik.android.components)
+    implementation(projects.coreApi)
+    implementation(projects.vulcanImpl)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

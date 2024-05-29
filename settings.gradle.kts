@@ -22,3 +22,5 @@ dependencyResolutionManagement {
 rootProject.name = "Vulka"
 include(":app")
 include(":ui-logic")
+include(":core-api")
+include(":vulcan-impl")
