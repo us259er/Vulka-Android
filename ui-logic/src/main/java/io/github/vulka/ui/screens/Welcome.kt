@@ -8,9 +8,11 @@ import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import dev.medzik.android.components.PreferenceEntry
 import io.github.vulka.core.api.Platform
+import io.github.vulka.ui.R
 import io.github.vulka.ui.screens.auth.Login
 import kotlinx.serialization.Serializable
 
@@ -25,7 +27,7 @@ fun WelcomeScreen(navController: NavController) {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Wybierz swój dziennik",
+                        text = stringResource(R.string.SelectJournal),
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -39,13 +41,13 @@ fun WelcomeScreen(navController: NavController) {
         ) {
             PreferenceEntry(
                 icon = { Icon(Icons.AutoMirrored.Filled.Login, contentDescription = null) },
-                title = "UONET+ Vulcan",
+                title = stringResource(R.string.Vulcan),
                 onClick = { navController.navigate(Login(Platform.Vulcan)) }
             )
 
             PreferenceEntry(
                 icon = { Icon(Icons.AutoMirrored.Filled.Login, contentDescription = null) },
-                title = "Librus Synergia",
+                title = stringResource(R.string.Librus),
                 onClick = { navController.navigate(Login(Platform.Librus)) }
             )
         }
