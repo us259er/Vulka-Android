@@ -40,6 +40,7 @@ dependencies {
     implementation(projects.coreApi)
     implementation(projects.vulcanImpl)
     implementation(projects.librusImpl)
+    implementation(projects.databaseLogic)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

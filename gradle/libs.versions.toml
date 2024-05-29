@@ -8,6 +8,7 @@ androidx-core = "1.13.1"
 androidx-espresso-core = "3.5.1"
 androidx-junit = "1.1.5"
 androidx-lifecycle-runtime = "2.8.0"
+androidx-room = "2.6.1"
 compose = "1.6.7"
 compose-activity = "1.9.0"
 compose-material3 = "1.2.1"
@@ -15,6 +16,7 @@ compose-navigation = "2.8.0-beta01"
 google-material = "1.12.0"
 junit = "4.13.2"
 kotlin = "2.0.0"
+kotlin-ksp = "2.0.0-1.0.21"
 kotlin-serialization = "1.6.3"
 ktor = "2.3.11"
 medzik-android-utils = "1.4.0"
@@ -25,6 +27,9 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidx-espresso-core" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-junit" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidx-lifecycle-runtime" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "androidx-room" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "androidx-room" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "androidx-room" }
 compose-androidx-activity = { group = "androidx.activity", name = "activity-compose", version.ref = "compose-activity" }
 compose-material-icons = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose" }
 compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "compose-material3" }
@@ -48,4 +53,5 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "kotlin-ksp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
