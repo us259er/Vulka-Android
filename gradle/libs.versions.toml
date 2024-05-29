@@ -17,6 +17,7 @@ dagger = "2.51.1"
 google-material = "1.12.0"
 gson = "2.11.0"
 hilt = "1.2.0"
+jsoup = "1.17.2"
 junit = "4.13.2"
 kotlin = "2.0.0"
 kotlin-ksp = "2.0.0-1.0.21"
@@ -48,6 +49,7 @@ dagger-hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", ver
 google-material = { module = "com.google.android.material:material", version.ref = "google-material" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt" }
+jsoup = { group = "org.jsoup", name = "jsoup", version.ref = "jsoup" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlin-serialization" }
 ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
