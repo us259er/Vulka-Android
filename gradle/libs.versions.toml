@@ -15,6 +15,7 @@ compose-material3 = "1.2.1"
 compose-navigation = "2.8.0-beta01"
 dagger = "2.51.1"
 google-material = "1.12.0"
+gson = "2.11.0"
 hilt = "1.2.0"
 junit = "4.13.2"
 kotlin = "2.0.0"
@@ -45,6 +46,7 @@ compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling
 dagger-hilt = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }
 dagger-hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "dagger" }
 google-material = { module = "com.google.android.material:material", version.ref = "google-material" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlin-serialization" }

@@ -32,4 +32,7 @@ dependencies {
 
     implementation(libs.dagger.hilt)
     ksp(libs.dagger.hilt.compiler)
+
+    // credential type converter
+    implementation(libs.gson)
 }
