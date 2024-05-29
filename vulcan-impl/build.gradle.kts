@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
 }
 
+
+
 android {
     namespace = "io.github.vulka.impl.vulcan"
     compileSdk = libs.versions.android.sdk.compile.get().toInt()
@@ -25,4 +27,6 @@ dependencies {
     implementation(libs.ktor.core)
     implementation(libs.ktor.okhttp)
     implementation(projects.coreApi)
+    implementation(libs.gson)
+    implementation(libs.hebe.jvm)
 }
