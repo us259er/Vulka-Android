@@ -8,8 +8,15 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import io.github.vulka.core.api.Platform
+import io.github.vulka.ui.common.DefaultScaffold
 import io.github.vulka.ui.screens.Welcome
 import io.github.vulka.ui.screens.WelcomeScreen
+import io.github.vulka.ui.screens.auth.Login
+import io.github.vulka.ui.screens.auth.LoginScreen
+import io.github.vulka.ui.utils.navtype.PlatformType
+import kotlin.reflect.typeOf
 
 @Composable
 fun VulkaNavigation() {
@@ -48,6 +55,16 @@ fun VulkaNavigation() {
     ) {
         composable<Welcome> {
             WelcomeScreen(navController)
+        }
+
+        composable<Login>(
+            typeMap = mapOf(typeOf<Platform>() to PlatformType)
+        ) {
+            val args = it.toRoute<Login>()
+
+            DefaultScaffold {
+                LoginScreen(args, navController)
+            }
         }
     }
 }
