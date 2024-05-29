@@ -22,5 +22,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.ktor.core)
+    implementation(libs.ktor.okhttp)
     implementation(projects.coreApi)
 }
