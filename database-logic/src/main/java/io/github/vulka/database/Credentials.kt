@@ -10,5 +10,5 @@ data class Credentials(
     @PrimaryKey
     val id: UUID = UUID.randomUUID(),
     val platform: Platform,
-    val data: CredentialsData
+    val data: String
 )

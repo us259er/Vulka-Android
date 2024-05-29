@@ -1,8 +1,10 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.dagger.hilt)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.ksp)
 }
 
 android {
@@ -34,6 +36,9 @@ dependencies {
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.graphics)
     implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.hilt.navigation.compose)
+    implementation(libs.dagger.hilt)
+    ksp(libs.dagger.hilt.compiler)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.medzik.android.components)
     implementation(libs.medzik.android.utils)

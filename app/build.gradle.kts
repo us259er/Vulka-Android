@@ -1,7 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.dagger.hilt)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.ksp)
 }
 
 android {
@@ -55,10 +57,12 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.compose.androidx.activity)
+    implementation(libs.compose.material3)
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.graphics)
     implementation(libs.compose.ui.tooling.preview)
-    implementation(libs.compose.material3)
+    implementation(libs.dagger.hilt)
+    ksp(libs.dagger.hilt.compiler)
     implementation(libs.google.material)
     implementation(projects.uiLogic)
     testImplementation(libs.junit)

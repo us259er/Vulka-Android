@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.library)
+    alias(libs.plugins.dagger.hilt)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.ksp)
 }
@@ -28,4 +29,7 @@ dependencies {
     ksp(libs.androidx.room.compiler)
 
     implementation(projects.coreApi)
+
+    implementation(libs.dagger.hilt)
+    ksp(libs.dagger.hilt.compiler)
 }
