@@ -10,6 +10,6 @@ class VulcanLoginClient : LoginClient {
 
     override suspend fun login(data: RequestData): VulcanLoginResponse {
         println(data as VulcanLoginData)
-        return VulcanLoginResponse(data.symbol)
+        return VulcanLoginResponse(null,null)
     }
 }

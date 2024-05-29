@@ -4,7 +4,6 @@ import com.google.gson.Gson
 import io.github.vulka.impl.vulcan.hebe.ApiEndpoints
 import io.github.vulka.impl.vulcan.hebe.HebeAccount
 import io.github.vulka.impl.vulcan.hebe.HebeHttpClient
-import io.github.vulka.impl.vulcan.hebe.VulcanSession
 import io.github.vulka.impl.vulcan.hebe.login.Keystore
 import io.github.vulka.impl.vulcan.hebe.login.PfxRequest
 import okhttp3.*
@@ -16,7 +15,7 @@ class VulcanApi @Throws(Exception::class) constructor() {
     private val logger: Logger = LoggerFactory.getLogger(VulcanApi::class.java)
 
     private lateinit var client: HebeHttpClient
-    lateinit var session: VulcanSession
+    lateinit var session: VulcanLoginResponse
 
     @Throws(IOException::class)
     fun getBaseUrl(token: String): String? {
@@ -75,7 +74,7 @@ class VulcanApi @Throws(Exception::class) constructor() {
             logger.debug("Response body $body")
 
             val accountJson = Gson().fromJson(body, HebeAccount::class.java)
-            session = VulcanSession(accountJson,keystore)
+            session = VulcanLoginResponse(accountJson,keystore)
         }
     }
 }
