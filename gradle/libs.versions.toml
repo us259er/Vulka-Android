@@ -15,6 +15,7 @@ google-material = "1.12.0"
 junit = "4.13.2"
 kotlin = "2.0.0"
 kotlin-serialization = "1.6.3"
+ktor = "2.3.11"
 medzik-android-utils = "1.4.0"
 
 [libraries]
@@ -34,6 +35,8 @@ compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling
 google-material = { module = "com.google.android.material:material", version.ref = "google-material" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlin-serialization" }
+ktor-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 medzik-android-components = { module = "dev.medzik.android:components", version.ref = "medzik-android-utils" }
 
 [plugins]
