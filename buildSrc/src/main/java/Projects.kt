@@ -6,6 +6,7 @@ class Projects(dh: DependencyHandler) {
 
     val coreApi = dh.project(":core-api")
     val vulcanImpl = dh.project(":vulcan-impl")
+    val librusImpl = dh.project(":librus-impl")
 }
 
 val DependencyHandler.projects: Projects

@@ -36,6 +36,7 @@ dependencies {
     implementation(libs.medzik.android.components)
     implementation(projects.coreApi)
     implementation(projects.vulcanImpl)
+    implementation(projects.librusImpl)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
