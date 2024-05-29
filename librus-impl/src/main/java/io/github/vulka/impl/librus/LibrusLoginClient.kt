@@ -18,9 +18,9 @@ class LibrusLoginClient : LoginClient {
     override suspend fun login(data: RequestData): LibrusLoginResponse {
         val loginData = data as LibrusLoginData
 
-//        client.get("https://api.librus.pl/OAuth/Authorization?client_id=46&response_type=code&scope=mydata")
+        client.get("https://api.librus.pl/OAuth/Authorization?client_id=46&response_type=code&scope=mydata")
 
-        val response = client.submitForm(
+        client.submitForm(
             url = "https://api.librus.pl/OAuth/Authorization?client_id=46",
             formParameters = parameters {
                 append("action", "login")
@@ -28,9 +28,6 @@ class LibrusLoginClient : LoginClient {
                 append("pass", loginData.password)
             }
         )
-
-        val s: String = response.body()
-        println(s)
 
         client.get("https://api.librus.pl/OAuth/Authorization/2FA?client_id=46")
 
