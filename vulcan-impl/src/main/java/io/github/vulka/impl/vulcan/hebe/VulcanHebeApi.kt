@@ -11,7 +11,7 @@ import io.github.vulka.impl.vulcan.hebe.types.ApiResponse
 import okhttp3.*
 import java.io.IOException
 
-class VulcanApi @Throws(Exception::class) constructor() {
+class VulcanHebeApi @Throws(Exception::class) constructor() {
     private lateinit var client: HebeHttpClient
     lateinit var session: VulcanLoginResponse
 

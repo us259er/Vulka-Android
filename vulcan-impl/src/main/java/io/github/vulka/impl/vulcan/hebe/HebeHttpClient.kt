@@ -37,11 +37,14 @@ class HebeHttpClient(private val keystore: HebeKeystore) {
 
     @Throws(IOException::class)
     private fun buildHeaders(fullUrl: String, body: String?): Headers {
-        val time = ZonedDateTime.now().format(DateTimeFormatter.RFC_1123_DATE_TIME)
+        val date = Date()
+        val time = SimpleDateFormat("EEE, d MMM yyyy hh:mm:ss", Locale.ENGLISH).apply {
+            timeZone = TimeZone.getTimeZone("GMT")
+        }.format(date) + " GMT"
         val (_,fingerprint,privateKey) = keystore.getData()
 
 //        val headersMap = getSignatureHeaders(keystore.fingerprint, keystore.privateKey, body ?: "", fullUrl, ZonedDateTime.now())
-        val (digest, canonicalUrl, signature) = getSignatureValues(fingerprint,privateKey, body, fullUrl, Date())
+        val (digest, canonicalUrl, signature) = getSignatureValues(fingerprint,privateKey, body, fullUrl,date )
         val headersBuilder = Headers.Builder()
             .add("User-Agent", APP_USER_AGENT)
             .add("vOS", APP_OS)
