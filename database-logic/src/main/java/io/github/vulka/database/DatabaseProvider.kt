@@ -33,7 +33,7 @@ object DatabaseProvider {
                 VulkaDatabase::class.java,
                 "vulka.db"
             )
-//                .allowMainThreadQueries()
+                .allowMainThreadQueries()
                 .build()
         }
 

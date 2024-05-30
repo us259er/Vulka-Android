@@ -26,4 +26,5 @@ dependencies {
     implementation(libs.ktor.okhttp)
     implementation(libs.jsoup)
     implementation(projects.coreApi)
+    implementation(projects.databaseLogic)
 }

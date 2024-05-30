@@ -10,5 +10,5 @@ interface CredentialsDao {
     suspend fun insert(credentials: Credentials)
 
     @Query("SELECT * FROM credentials LIMIT 1")
-    suspend fun get(): Credentials?
+    fun get(): Credentials?
 }

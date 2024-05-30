@@ -9,23 +9,25 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.google.gson.Gson
 import dev.medzik.android.components.LoadingButton
 import dev.medzik.android.components.rememberMutableBoolean
 import dev.medzik.android.components.rememberMutableString
 import dev.medzik.android.utils.runOnIOThread
+import dev.medzik.android.utils.runOnUiThread
 import io.github.vulka.core.api.Platform
 import io.github.vulka.core.api.RequestData
+import io.github.vulka.database.Credentials
 import io.github.vulka.impl.librus.LibrusLoginClient
 import io.github.vulka.impl.librus.LibrusLoginData
+import io.github.vulka.impl.librus.LibrusLoginResponse
 import io.github.vulka.impl.vulcan.VulcanLoginClient
+import io.github.vulka.impl.vulcan.VulcanLoginResponse
 import io.github.vulka.ui.R
 import io.github.vulka.ui.VulkaViewModel
 import io.github.vulka.ui.common.TextInputField
+import io.github.vulka.ui.screens.dashboard.Home
 import kotlinx.serialization.Serializable
-import java.io.PrintWriter
-import java.io.StringWriter
-import java.io.Writer
-import java.util.logging.Logger
 
 
 @Serializable
@@ -135,11 +137,40 @@ fun LoginScreen(
             onClick = {
                 if (requestData != null) {
                     runOnIOThread {
+                        loading = true
+
                         try {
-                            client.login(requestData!!)
+                            val response = client.login(requestData!!)
+
+                            println(Gson().toJson(response))
+
+                            val credentials = Credentials(
+                                platform = args.platform,
+                                data = Gson().toJson(
+                                    when (response) {
+                                        is VulcanLoginResponse -> TODO()
+                                        is LibrusLoginResponse -> response.cookies
+                                        else -> throw IllegalStateException()
+                                    }
+                                )
+                            )
+
+                            viewModel.credentialRepository.insert(credentials)
+
+                            runOnUiThread {
+                                navController.navigate(
+                                    Home(
+                                        platform = credentials.platform,
+                                        userId = credentials.id.toString(),
+                                        credentials = credentials.data
+                                    )
+                                )
+                            }
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
+
+                        loading = false
                     }
                 }
             },

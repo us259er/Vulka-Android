@@ -42,6 +42,8 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.medzik.android.components)
     implementation(libs.medzik.android.utils)
+    implementation(libs.gson)
+    implementation(libs.ktor.core)
     implementation(projects.coreApi)
     implementation(projects.vulcanImpl)
     implementation(projects.librusImpl)
