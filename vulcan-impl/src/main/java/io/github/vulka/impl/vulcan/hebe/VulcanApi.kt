@@ -50,15 +50,17 @@ class VulcanApi @Throws(Exception::class) constructor() {
 
         val fullUrl = "$baseUrl/$lowerSymbol/${ApiEndpoints.DEVICE_REGISTER}"
 
+        val (certificate,fingerprint,_) = keystore.getData()
+
         val pfxRequest = PfxRequest(
             OS = "Android",
             deviceModel = keystore.deviceModel,
-            certificate = keystore.certificate,
+            certificate = certificate,
             certificateType = "X509",
-            certificateThumbprint = keystore.fingerprint,
+            certificateThumbprint = fingerprint,
             pin = pin,
             securityToken = upperToken,
-            selfIdentifier = Utils.uuid(keystore.fingerprint)
+            selfIdentifier = Utils.uuid(fingerprint)
         )
 
         Log.i("Vulcan API","URL: $fullUrl")
@@ -67,7 +69,6 @@ class VulcanApi @Throws(Exception::class) constructor() {
 
 
         client.post(fullUrl, pfxRequest).use { response ->
-
             Log.i("Vulcan API","Response code ${response.code}")
             val body = response.body?.string()
             Log.i("Vulcan API","Response body $body")
