@@ -22,6 +22,11 @@ import io.github.vulka.ui.R
 import io.github.vulka.ui.VulkaViewModel
 import io.github.vulka.ui.common.TextInputField
 import kotlinx.serialization.Serializable
+import java.io.PrintWriter
+import java.io.StringWriter
+import java.io.Writer
+import java.util.logging.Logger
+
 
 @Serializable
 class Login(val platform: Platform)
@@ -130,7 +135,11 @@ fun LoginScreen(
             onClick = {
                 if (requestData != null) {
                     runOnIOThread {
-                        client.login(requestData!!)
+                        try {
+                            client.login(requestData!!)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
                     }
                 }
             },
