@@ -16,6 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import io.github.vulka.core.api.Platform
 import io.github.vulka.ui.common.DefaultScaffold
+import io.github.vulka.ui.common.TopAppBarWithBack
 import io.github.vulka.ui.screens.Welcome
 import io.github.vulka.ui.screens.WelcomeScreen
 import io.github.vulka.ui.screens.auth.Login
@@ -86,12 +87,9 @@ fun VulkaNavigation(viewModel: VulkaViewModel = hiltViewModel()) {
 
             DefaultScaffold(
                 topBar = {
-                    TopAppBar(
-                        title = {
-                            Text(
-                                text = stringResource(R.string.Login)
-                            )
-                        }
+                    TopAppBarWithBack(
+                        title = R.string.Login,
+                        navController
                     )
                 }
             ) {
