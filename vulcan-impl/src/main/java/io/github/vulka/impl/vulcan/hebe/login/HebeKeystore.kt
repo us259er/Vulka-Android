@@ -7,31 +7,31 @@ import io.github.vulka.impl.vulcan.hebe.getKeyEntry
 import java.security.PrivateKey
 
 data class HebeKeystore(
-    val certificate: String,
-    val fingerprint: String,
-    val privateKey: PrivateKey,
+    val privateKeyAlias: String,
     val firebaseToken: String,
     val deviceModel: String
 ) {
+
+    fun getData(): Triple<String,String,PrivateKey> {
+        return getKeyEntry(privateKeyAlias)
+    }
 
     companion object {
         @JvmStatic
         @Throws(Exception::class)
         fun restore(alias: String, firebaseToken: String?, deviceModel: String): HebeKeystore {
             Log.d("Vulcan Keystore","Restoring key pair...")
-            val (certificate, fingerprint, privateKey) = getKeyEntry(alias)
 
             val token = firebaseToken ?: ""
 
             val keystore = HebeKeystore(
-                certificate = certificate,
-                fingerprint = fingerprint,
-                privateKey = privateKey,
+                privateKeyAlias = alias,
                 firebaseToken = token,
                 deviceModel = deviceModel
             )
+            val (_, fingerprint, _) = keystore.getData()
 
-            Log.d("Vulcan Keystore","Generated for $deviceModel, sha1: ${keystore.fingerprint}")
+            Log.d("Vulcan Keystore","Generated for $deviceModel, sha1: $fingerprint")
             return keystore
         }
 
@@ -39,19 +39,17 @@ data class HebeKeystore(
         @Throws(Exception::class)
         fun create(context: Context, alias: String, firebaseToken: String?, deviceModel: String): HebeKeystore {
             Log.d("Vulcan Keystore","Generating key pair...")
-            val (certificate, fingerprint, privateKey) = generateKeyPair(context, alias)
+            val (_, fingerprint, _) = generateKeyPair(context, alias)
 
             val token = firebaseToken ?: ""
 
             val keystore = HebeKeystore(
-                certificate = certificate,
-                fingerprint = fingerprint,
-                privateKey = privateKey,
+                privateKeyAlias = alias,
                 firebaseToken = token,
                 deviceModel = deviceModel
             )
 
-            Log.d("Vulcan Keystore","Generated for $deviceModel, sha1: ${keystore.fingerprint}")
+            Log.d("Vulcan Keystore","Generated for $deviceModel, sha1: $fingerprint")
             return keystore
         }
 

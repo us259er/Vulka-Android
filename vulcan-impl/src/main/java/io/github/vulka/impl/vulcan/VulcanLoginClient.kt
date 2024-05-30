@@ -2,8 +2,7 @@ package io.github.vulka.impl.vulcan
 
 import io.github.vulka.core.api.LoginClient
 import io.github.vulka.core.api.RequestData
-import io.ktor.client.*
-import io.ktor.client.engine.okhttp.*
+import io.github.vulka.impl.vulcan.hebe.VulcanApi
 
 class VulcanLoginClient : LoginClient {
     private val api = VulcanApi()

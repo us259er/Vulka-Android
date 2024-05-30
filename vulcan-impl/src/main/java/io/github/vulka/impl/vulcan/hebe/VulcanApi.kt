@@ -1,18 +1,15 @@
-package io.github.vulka.impl.vulcan
+package io.github.vulka.impl.vulcan.hebe
 
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import io.github.vulka.impl.vulcan.hebe.ApiEndpoints
-import io.github.vulka.impl.vulcan.hebe.HebeAccount
-import io.github.vulka.impl.vulcan.hebe.HebeHttpClient
+import io.github.vulka.impl.vulcan.Utils
+import io.github.vulka.impl.vulcan.VulcanLoginResponse
 import io.github.vulka.impl.vulcan.hebe.login.HebeKeystore
 import io.github.vulka.impl.vulcan.hebe.login.PfxRequest
 import io.github.vulka.impl.vulcan.hebe.types.ApiResponse
 import okhttp3.*
 import java.io.IOException
-
 
 class VulcanApi @Throws(Exception::class) constructor() {
     private lateinit var client: HebeHttpClient

@@ -1,4 +1,4 @@
-package io.github.vulka.impl.vulcan
+package io.github.vulka.impl.vulcan.hebe
 
 open class VulcanAPIException(message: String) : Exception(message)
 

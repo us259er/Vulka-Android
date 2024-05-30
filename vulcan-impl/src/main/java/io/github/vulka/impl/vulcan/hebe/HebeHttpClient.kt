@@ -38,9 +38,10 @@ class HebeHttpClient(private val keystore: HebeKeystore) {
     @Throws(IOException::class)
     private fun buildHeaders(fullUrl: String, body: String?): Headers {
         val time = ZonedDateTime.now().format(DateTimeFormatter.RFC_1123_DATE_TIME)
+        val (_,fingerprint,privateKey) = keystore.getData()
 
 //        val headersMap = getSignatureHeaders(keystore.fingerprint, keystore.privateKey, body ?: "", fullUrl, ZonedDateTime.now())
-        val (digest, canonicalUrl, signature) = getSignatureValues(keystore.fingerprint, keystore.privateKey, body, fullUrl, Date())
+        val (digest, canonicalUrl, signature) = getSignatureValues(fingerprint,privateKey, body, fullUrl, Date())
         val headersBuilder = Headers.Builder()
             .add("User-Agent", APP_USER_AGENT)
             .add("vOS", APP_OS)
@@ -59,10 +60,11 @@ class HebeHttpClient(private val keystore: HebeKeystore) {
     }
 
     private fun buildPayload(body: Any): ApiRequest {
+        val (_,fingerprint,_) = keystore.getData()
         return ApiRequest(
             appName = APP_NAME,
             appVersion = APP_VERSION,
-            certificateId = keystore.fingerprint,
+            certificateId = fingerprint,
             envelope = body,
             firebaseToken = keystore.firebaseToken,
             api = 1,
