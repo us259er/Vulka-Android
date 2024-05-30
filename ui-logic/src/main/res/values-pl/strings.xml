@@ -2,4 +2,5 @@
 <resources>
     <string name="SelectJournal">Wybierz swój dziennik</string>
     <string name="Login">Zaloguj się</string>
+    <string name="Field_Password">Hasło</string>
 </resources>

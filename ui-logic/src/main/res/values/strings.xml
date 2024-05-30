@@ -4,7 +4,9 @@
     <string name="Vulcan" translatable="false">UONET+ Vulcan</string>
     <string name="Librus" translatable="false">Librus Synergia</string>
     <string name="Login">Login</string>
-    <string name="Symbol" translatable="false">Symbol</string>
-    <string name="Token" translatable="false">Token</string>
-    <string name="Pin" translatable="false">PIN</string>
+    <string name="Field_Symbol" translatable="false">Symbol</string>
+    <string name="Field_Token" translatable="false">Token</string>
+    <string name="Field_Pin" translatable="false">PIN</string>
+    <string name="Field_Login" translatable="false">Login</string>
+    <string name="Field_Password">Password</string>
 </resources>
