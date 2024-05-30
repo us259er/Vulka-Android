@@ -25,6 +25,8 @@ dependencyResolutionManagement {
     }
 }
 
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 rootProject.name = "Vulka"
 include(":app")
 include(":ui-logic")
