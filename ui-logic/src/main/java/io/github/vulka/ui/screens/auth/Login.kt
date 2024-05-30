@@ -9,6 +9,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.google.gson.Gson
 import dev.medzik.android.components.LoadingButton
 import dev.medzik.android.components.rememberMutableBoolean
@@ -28,7 +29,6 @@ import io.github.vulka.ui.VulkaViewModel
 import io.github.vulka.ui.common.TextInputField
 import io.github.vulka.ui.screens.dashboard.Home
 import kotlinx.serialization.Serializable
-
 
 @Serializable
 class Login(val platform: Platform)
@@ -164,7 +164,12 @@ fun LoginScreen(
                                         userId = credentials.id.toString(),
                                         credentials = credentials.data
                                     )
-                                )
+                                ) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = false
+                                        inclusive = true
+                                    }
+                                }
                             }
                         } catch (e: Exception) {
                             e.printStackTrace()
