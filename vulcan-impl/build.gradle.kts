@@ -28,5 +28,6 @@ dependencies {
     implementation(libs.ktor.okhttp)
     implementation(projects.coreApi)
     implementation(libs.gson)
-    implementation(libs.hebe.jvm)
+
+    implementation("com.brsanthu:migbase64:2.2")
 }

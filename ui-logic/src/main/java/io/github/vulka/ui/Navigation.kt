@@ -3,8 +3,13 @@ package io.github.vulka.ui
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -18,6 +23,7 @@ import io.github.vulka.ui.screens.auth.LoginScreen
 import io.github.vulka.ui.utils.navtype.PlatformType
 import kotlin.reflect.typeOf
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VulkaNavigation() {
     val navController = rememberNavController()
@@ -62,7 +68,18 @@ fun VulkaNavigation() {
         ) {
             val args = it.toRoute<Login>()
 
-            DefaultScaffold {
+            DefaultScaffold(
+                topBar = {
+                    TopAppBar(
+                        title = {
+                            Text(
+                                text = stringResource(R.string.Login),
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    )
+                }
+            ) {
                 LoginScreen(args, navController)
             }
         }

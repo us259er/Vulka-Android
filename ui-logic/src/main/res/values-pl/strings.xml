@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="SelectJournal">Wybierz swój dziennik</string>
+    <string name="Login">Zaloguj się</string>
 </resources>

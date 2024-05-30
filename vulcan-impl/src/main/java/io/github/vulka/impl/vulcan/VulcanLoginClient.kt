@@ -6,10 +6,12 @@ import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 
 class VulcanLoginClient : LoginClient {
-    private val client = HttpClient(OkHttp)
+    private val api = VulcanApi()
 
     override suspend fun login(data: RequestData): VulcanLoginResponse {
-        println(data as VulcanLoginData)
-        return VulcanLoginResponse(null,null)
+        val loginData = data as VulcanLoginData
+        val response = api.register(loginData.keystore,loginData.symbol,loginData.token,loginData.pin)
+
+        return VulcanLoginResponse(response.envelope,data.keystore)
     }
 }

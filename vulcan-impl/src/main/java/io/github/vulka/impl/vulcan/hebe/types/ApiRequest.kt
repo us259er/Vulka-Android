@@ -2,7 +2,7 @@ package io.github.vulka.impl.vulcan.hebe.types
 
 import java.util.UUID
 
-data class Payload(
+data class ApiRequest(
     var appName: String,
     var appVersion: String,
     var certificateId: String,

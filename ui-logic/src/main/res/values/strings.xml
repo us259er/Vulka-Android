@@ -3,4 +3,8 @@
     <string name="SelectJournal">Select your e-journal</string>
     <string name="Vulcan" translatable="false">UONET+ Vulcan</string>
     <string name="Librus" translatable="false">Librus Synergia</string>
+    <string name="Login">Login</string>
+    <string name="Symbol" translatable="false">Symbol</string>
+    <string name="Token" translatable="false">Token</string>
+    <string name="Pin" translatable="false">PIN</string>
 </resources>

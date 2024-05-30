@@ -1,19 +1,20 @@
 package io.github.vulka.impl.vulcan
 
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.util.Log
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import io.github.vulka.impl.vulcan.hebe.ApiEndpoints
 import io.github.vulka.impl.vulcan.hebe.HebeAccount
 import io.github.vulka.impl.vulcan.hebe.HebeHttpClient
-import io.github.vulka.impl.vulcan.hebe.login.Keystore
+import io.github.vulka.impl.vulcan.hebe.login.HebeKeystore
 import io.github.vulka.impl.vulcan.hebe.login.PfxRequest
+import io.github.vulka.impl.vulcan.hebe.types.ApiResponse
 import okhttp3.*
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.io.IOException
 
-class VulcanApi @Throws(Exception::class) constructor() {
-    private val logger: Logger = LoggerFactory.getLogger(VulcanApi::class.java)
 
+class VulcanApi @Throws(Exception::class) constructor() {
     private lateinit var client: HebeHttpClient
     lateinit var session: VulcanLoginResponse
 
@@ -22,7 +23,7 @@ class VulcanApi @Throws(Exception::class) constructor() {
         val client = OkHttpClient()
 
         val request = Request.Builder()
-            .url("http://komponenty.vulcan.net.pl/UonetPlusMobile/RoutingRules.txt")
+            .url("https://komponenty.vulcan.net.pl/UonetPlusMobile/RoutingRules.txt")
             .build()
 
         client.newCall(request).execute().use { response ->
@@ -41,11 +42,10 @@ class VulcanApi @Throws(Exception::class) constructor() {
     }
 
     @Throws(Exception::class)
-    fun register(symbol: String, token: String, pin: String) {
+    fun register(keystore: HebeKeystore, symbol: String, token: String, pin: String): ApiResponse<HebeAccount> {
         val upperToken = token.uppercase()
         val lowerSymbol = symbol.lowercase()
 
-        val keystore = Keystore.create("", "Vulka SDK 0.0.1")
         client = HebeHttpClient(keystore)
 
         // https://lekcjaplus.vulcan.net.pl
@@ -64,17 +64,21 @@ class VulcanApi @Throws(Exception::class) constructor() {
             selfIdentifier = Utils.uuid(keystore.fingerprint)
         )
 
-        logger.info("URL: $fullUrl")
-        logger.info("Registering to $lowerSymbol")
+        Log.i("Vulcan API","URL: $fullUrl")
+        Log.i("Vulcan API","Registering to $lowerSymbol")
+
+
 
         client.post(fullUrl, pfxRequest).use { response ->
 
-            logger.debug("Response code ${response.code}")
+            Log.i("Vulcan API","Response code ${response.code}")
             val body = response.body?.string()
-            logger.debug("Response body $body")
+            Log.i("Vulcan API","Response body $body")
 
-            val accountJson = Gson().fromJson(body, HebeAccount::class.java)
-            session = VulcanLoginResponse(accountJson,keystore)
+            val apiResponse = Gson().fromJson<ApiResponse<HebeAccount>>(body, object : TypeToken<ApiResponse<HebeAccount>>() {}.type)
+            session = VulcanLoginResponse(apiResponse.envelope,keystore)
+
+            return apiResponse
         }
     }
 }
