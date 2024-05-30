@@ -5,6 +5,7 @@ import android.util.Log
 import io.github.vulka.impl.vulcan.hebe.generateKeyPair
 import io.github.vulka.impl.vulcan.hebe.getKeyEntry
 import java.security.PrivateKey
+import kotlin.random.Random
 
 data class HebeKeystore(
     val privateKeyAlias: String,
@@ -17,7 +18,12 @@ data class HebeKeystore(
     }
 
     companion object {
-        @JvmStatic
+
+        fun generateKeystoreName(symbol: String): String {
+            // Key name must be random, without login we don't have any information about account
+            return "vulcan_hebe_key_$symbol-${Random.nextInt()}"
+        }
+
         @Throws(Exception::class)
         fun restore(alias: String, firebaseToken: String?, deviceModel: String): HebeKeystore {
             Log.d("Vulcan Keystore","Restoring key pair...")
@@ -35,7 +41,6 @@ data class HebeKeystore(
             return keystore
         }
 
-        @JvmStatic
         @Throws(Exception::class)
         fun create(context: Context, alias: String, firebaseToken: String?, deviceModel: String): HebeKeystore {
             Log.d("Vulcan Keystore","Generating key pair...")

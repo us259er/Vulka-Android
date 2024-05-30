@@ -10,6 +10,7 @@ import dev.medzik.android.utils.runOnIOThread
 import io.github.vulka.core.api.Platform
 import io.github.vulka.core.api.response.AccountInfo
 import io.github.vulka.impl.librus.LibrusUserClient
+import io.github.vulka.impl.vulcan.VulcanUserClient
 import io.github.vulka.ui.VulkaViewModel
 import io.ktor.http.*
 import kotlinx.serialization.Serializable
@@ -29,22 +30,30 @@ fun HomeScreen(
     viewModel: VulkaViewModel = hiltViewModel()
 ) {
     val client = when (args.platform) {
-        Platform.Vulcan -> TODO()
+        Platform.Vulcan -> VulcanUserClient()
         Platform.Librus -> LibrusUserClient(
             Gson().fromJson(args.credentials, object : TypeToken<List<Cookie>>() {}.type)
         )
     }
 
-    var accountInfo: AccountInfo? by remember { mutableStateOf(null) }
+    when (args.platform) {
+        Platform.Librus -> {
+            var accountInfo: AccountInfo? by remember { mutableStateOf(null) }
 
-    LaunchedEffect(Unit) {
-        runOnIOThread {
-            accountInfo = client.getAccountInfo()
+            LaunchedEffect(Unit) {
+                runOnIOThread {
+                    accountInfo = client.getAccountInfo()
+                }
+            }
+
+            if (accountInfo != null) {
+                Text(accountInfo!!.fullName)
+                Text(accountInfo!!.className)
+            }
         }
-    }
 
-    if (accountInfo != null) {
-        Text(accountInfo!!.fullName)
-        Text(accountInfo!!.className)
+        Platform.Vulcan -> {
+            Text(text = args.credentials)
+        }
     }
 }
