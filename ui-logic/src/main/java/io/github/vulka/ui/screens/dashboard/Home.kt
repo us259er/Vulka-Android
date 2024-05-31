@@ -11,6 +11,8 @@ import io.github.vulka.core.api.response.AccountInfo
 import io.github.vulka.impl.librus.LibrusLoginClient
 import io.github.vulka.impl.librus.LibrusLoginData
 import io.github.vulka.impl.librus.LibrusUserClient
+import io.github.vulka.impl.vulcan.VulcanLoginData
+import io.github.vulka.impl.vulcan.VulcanLoginResponse
 import io.github.vulka.impl.vulcan.VulcanUserClient
 import io.github.vulka.ui.VulkaViewModel
 import io.github.vulka.ui.crypto.decryptCredentials
@@ -33,7 +35,10 @@ fun HomeScreen(
     val credentials = decryptCredentials(args.credentials)
 
     val client = when (args.platform) {
-        Platform.Vulcan -> VulcanUserClient()
+        Platform.Vulcan -> {
+            val loginData = Gson().fromJson(credentials, VulcanLoginResponse::class.java)
+            VulcanUserClient(loginData)
+        }
         Platform.Librus -> {
             val loginData = Gson().fromJson(credentials, LibrusLoginData::class.java)
 
@@ -62,7 +67,7 @@ fun HomeScreen(
         }
 
         Platform.Vulcan -> {
-            Text(text = args.credentials)
+            Text(text = credentials)
         }
     }
 }

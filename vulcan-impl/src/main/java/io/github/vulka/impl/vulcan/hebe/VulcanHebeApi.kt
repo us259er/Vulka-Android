@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.github.vulka.core.api.log.LoggerFactory
 import io.github.vulka.impl.vulcan.Utils
+import io.github.vulka.impl.vulcan.VulcanLoginResponse
 import io.github.vulka.impl.vulcan.hebe.login.HebeKeystore
 import io.github.vulka.impl.vulcan.hebe.login.PfxRequest
 import io.github.vulka.impl.vulcan.hebe.types.ApiResponse
@@ -76,7 +77,7 @@ class VulcanHebeApi {
 
         client.post(fullUrl, pfxRequest).use { response ->
             log.info("Response code ${response.code}")
-            val body = response.body.string()
+            val body = response.body?.string()
             log.info("Response body $body")
 
             val apiResponse = Gson().fromJson<ApiResponse<HebeAccount>>(body, object : TypeToken<ApiResponse<HebeAccount>>() {}.type)
@@ -95,7 +96,7 @@ class VulcanHebeApi {
         log.info("Students URL: $fullUrl")
 
         client.get(fullUrl).use {
-            val body = it.body.string()
+            val body = it.body?.string()
             println(body)
             val apiResponse = Gson().fromJson<ApiResponse<Array<HebeStudent>>>(body, object : TypeToken<ApiResponse<Array<HebeStudent>>>() {}.type)
             log.info("Code: ${it.code}")

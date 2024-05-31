@@ -5,7 +5,6 @@ import io.github.vulka.core.api.response.AccountInfo
 import io.github.vulka.core.api.types.Parent
 import io.github.vulka.core.api.types.Student
 import io.github.vulka.impl.vulcan.hebe.VulcanHebeApi
-import io.github.vulka.impl.vulcan.hebe.VulcanLoginResponse
 
 class VulcanUserClient(
     credentials: VulcanLoginResponse

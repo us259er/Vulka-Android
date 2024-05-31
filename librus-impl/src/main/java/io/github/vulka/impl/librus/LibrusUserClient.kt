@@ -2,6 +2,7 @@ package io.github.vulka.impl.librus
 
 import io.github.vulka.core.api.UserClient
 import io.github.vulka.core.api.response.AccountInfo
+import io.github.vulka.core.api.types.Student
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.okhttp.*
@@ -17,6 +18,10 @@ class LibrusUserClient(
         install(HttpCookies) {
             storage = ConstantCookiesStorage(*cookies.toTypedArray())
         }
+    }
+
+    override suspend fun getStudents(): Array<Student> {
+        TODO("Not yet implemented")
     }
 
     override suspend fun getAccountInfo(): AccountInfo {

@@ -3,7 +3,6 @@ package io.github.vulka.impl.vulcan
 import io.github.vulka.core.api.LoginClient
 import io.github.vulka.core.api.RequestData
 import io.github.vulka.impl.vulcan.hebe.VulcanHebeApi
-import io.github.vulka.impl.vulcan.hebe.VulcanLoginResponse
 
 class VulcanLoginClient : LoginClient {
     private val api = VulcanHebeApi()

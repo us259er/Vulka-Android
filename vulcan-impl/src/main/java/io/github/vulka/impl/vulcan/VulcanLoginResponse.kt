@@ -5,6 +5,6 @@ import io.github.vulka.impl.vulcan.hebe.HebeAccount
 import io.github.vulka.impl.vulcan.hebe.login.HebeKeystore
 
 data class VulcanLoginResponse(
-    val account: HebeAccount?,
-    val keystore: HebeKeystore?
+    val account: HebeAccount,
+    val keystore: HebeKeystore
 ) : ResponseData
