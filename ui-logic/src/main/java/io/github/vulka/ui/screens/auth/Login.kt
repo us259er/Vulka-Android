@@ -1,5 +1,6 @@
 package io.github.vulka.ui.screens.auth
 
+import android.os.Build
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -129,64 +130,64 @@ fun LoginScreen(
 
         LoadingButton(
             onClick = {
-                    runOnIOThread {
-                        loading = true
+                runOnIOThread {
+                    loading = true
 
-                        // For Vulcan we must create keystore first
-                        if (args.platform == Platform.Vulcan) {
-                            val keystore = HebeKeystore.create(
-                                context = context,
-                                alias = HebeKeystore.generateKeystoreName(vulcanSymbol),
-                                firebaseToken = "",
-                                deviceModel = "Vulka Alpha")
+                    // For Vulcan we must create keystore first
+                    if (args.platform == Platform.Vulcan) {
+                        val keystore = HebeKeystore.create(
+                            context = context,
+                            alias = HebeKeystore.generateKeystoreName(vulcanSymbol),
+                            firebaseToken = "",
+                            deviceModel = "${Build.MANUFACTURER} ${Build.MODEL} (Vulka)")
 
-                            requestData = VulcanLoginData(
-                                symbol = vulcanSymbol,
-                                token = vulcanToken,
-                                pin = vulcanPin,
-                                keystore = keystore
+                        requestData = VulcanLoginData(
+                            symbol = vulcanSymbol,
+                            token = vulcanToken,
+                            pin = vulcanPin,
+                            keystore = keystore
+                        )
+                    }
+
+                    try {
+                        val response = client.login(requestData!!)
+
+                        println(Gson().toJson(response))
+
+                        val credentials = Credentials(
+                            platform = args.platform,
+                            data = Gson().toJson(
+                                when (response) {
+                                    // for vulcan whole response is needed (VulcanLoginResponse)
+                                    is VulcanLoginResponse -> response
+                                    is LibrusLoginResponse -> response.cookies
+                                    else -> throw IllegalStateException()
+                                }
                             )
-                        }
+                        )
 
-                        try {
-                            val response = client.login(requestData!!)
+                        viewModel.credentialRepository.insert(credentials)
 
-                            println(Gson().toJson(response))
-
-                            val credentials = Credentials(
-                                platform = args.platform,
-                                data = Gson().toJson(
-                                    when (response) {
-                                        // for vulcan whole response is needed (VulcanLoginResponse)
-                                        is VulcanLoginResponse -> response
-                                        is LibrusLoginResponse -> response.cookies
-                                        else -> throw IllegalStateException()
-                                    }
+                        runOnUiThread {
+                            navController.navigate(
+                                Home(
+                                    platform = credentials.platform,
+                                    userId = credentials.id.toString(),
+                                    credentials = credentials.data
                                 )
-                            )
-
-                            viewModel.credentialRepository.insert(credentials)
-
-                            runOnUiThread {
-                                navController.navigate(
-                                    Home(
-                                        platform = credentials.platform,
-                                        userId = credentials.id.toString(),
-                                        credentials = credentials.data
-                                    )
-                                ) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = false
-                                        inclusive = true
-                                    }
+                            ) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = false
+                                    inclusive = true
                                 }
                             }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
                         }
-
-                        loading = false
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
+
+                    loading = false
+                }
             },
             loading = loading,
             modifier = Modifier
