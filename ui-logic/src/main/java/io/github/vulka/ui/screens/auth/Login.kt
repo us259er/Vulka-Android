@@ -69,7 +69,6 @@ fun LoginScreen(
         ) {
             when (args.platform) {
                 Platform.Vulcan -> {
-
                     TextInputField(
                         label = stringResource(R.string.Field_Symbol),
                         value = vulcanSymbol,
@@ -158,7 +157,7 @@ fun LoginScreen(
                                 when (response) {
                                     // for vulcan whole response is needed (VulcanLoginResponse)
                                     is VulcanLoginResponse -> response
-                                    is LibrusLoginResponse -> response.cookies
+                                    is LibrusLoginResponse -> response.request
                                     else -> throw IllegalStateException()
                                 }
                             )

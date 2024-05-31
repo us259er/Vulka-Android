@@ -5,14 +5,15 @@ import androidx.compose.runtime.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import dev.medzik.android.utils.runOnIOThread
 import io.github.vulka.core.api.Platform
 import io.github.vulka.core.api.response.AccountInfo
+import io.github.vulka.impl.librus.LibrusLoginClient
+import io.github.vulka.impl.librus.LibrusLoginData
 import io.github.vulka.impl.librus.LibrusUserClient
 import io.github.vulka.impl.vulcan.VulcanUserClient
 import io.github.vulka.ui.VulkaViewModel
-import io.ktor.http.*
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 
 
@@ -31,9 +32,15 @@ fun HomeScreen(
 ) {
     val client = when (args.platform) {
         Platform.Vulcan -> VulcanUserClient()
-        Platform.Librus -> LibrusUserClient(
-            Gson().fromJson(args.credentials, object : TypeToken<List<Cookie>>() {}.type)
-        )
+        Platform.Librus -> {
+            val loginData = Gson().fromJson(args.credentials, LibrusLoginData::class.java)
+
+            // TODO: do not block main-thread
+            runBlocking {
+                val loginResponse = LibrusLoginClient().login(loginData)
+                LibrusUserClient(loginResponse.cookies)
+            }
+        }
     }
 
     when (args.platform) {

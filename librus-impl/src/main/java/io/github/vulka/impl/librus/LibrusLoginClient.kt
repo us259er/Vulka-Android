@@ -3,7 +3,6 @@ package io.github.vulka.impl.librus
 import io.github.vulka.core.api.LoginClient
 import io.github.vulka.core.api.RequestData
 import io.ktor.client.*
-import io.ktor.client.call.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.plugins.cookies.*
 import io.ktor.client.request.*
@@ -33,6 +32,9 @@ class LibrusLoginClient : LoginClient {
 
         val cookies = client.cookies("https://synergia.librus.pl")
 
-        return LibrusLoginResponse(cookies)
+        return LibrusLoginResponse(
+            cookies = cookies,
+            request = loginData
+        )
     }
 }
