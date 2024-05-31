@@ -13,9 +13,9 @@ import io.github.vulka.impl.librus.LibrusLoginData
 import io.github.vulka.impl.librus.LibrusUserClient
 import io.github.vulka.impl.vulcan.VulcanUserClient
 import io.github.vulka.ui.VulkaViewModel
+import io.github.vulka.ui.crypto.decryptCredentials
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
-
 
 @Serializable
 class Home(
@@ -30,10 +30,12 @@ fun HomeScreen(
     navController: NavController,
     viewModel: VulkaViewModel = hiltViewModel()
 ) {
+    val credentials = decryptCredentials(args.credentials)
+
     val client = when (args.platform) {
         Platform.Vulcan -> VulcanUserClient()
         Platform.Librus -> {
-            val loginData = Gson().fromJson(args.credentials, LibrusLoginData::class.java)
+            val loginData = Gson().fromJson(credentials, LibrusLoginData::class.java)
 
             // TODO: do not block main-thread
             runBlocking {

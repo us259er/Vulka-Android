@@ -12,7 +12,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import com.google.gson.Gson
 import dev.medzik.android.components.LoadingButton
 import dev.medzik.android.components.rememberMutableBoolean
 import dev.medzik.android.components.rememberMutableString
@@ -23,14 +22,13 @@ import io.github.vulka.core.api.RequestData
 import io.github.vulka.database.Credentials
 import io.github.vulka.impl.librus.LibrusLoginClient
 import io.github.vulka.impl.librus.LibrusLoginData
-import io.github.vulka.impl.librus.LibrusLoginResponse
 import io.github.vulka.impl.vulcan.VulcanLoginClient
 import io.github.vulka.impl.vulcan.VulcanLoginData
-import io.github.vulka.impl.vulcan.VulcanLoginResponse
 import io.github.vulka.impl.vulcan.hebe.login.HebeKeystore
 import io.github.vulka.ui.R
 import io.github.vulka.ui.VulkaViewModel
 import io.github.vulka.ui.common.TextInputField
+import io.github.vulka.ui.crypto.serializeCredentialsAndEncrypt
 import io.github.vulka.ui.screens.dashboard.Home
 import kotlinx.serialization.Serializable
 
@@ -153,14 +151,7 @@ fun LoginScreen(
 
                         val credentials = Credentials(
                             platform = args.platform,
-                            data = Gson().toJson(
-                                when (response) {
-                                    // for vulcan whole response is needed (VulcanLoginResponse)
-                                    is VulcanLoginResponse -> response
-                                    is LibrusLoginResponse -> response.request
-                                    else -> throw IllegalStateException()
-                                }
-                            )
+                            data = serializeCredentialsAndEncrypt(response)
                         )
 
                         viewModel.credentialRepository.insert(credentials)

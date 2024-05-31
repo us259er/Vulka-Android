@@ -25,6 +25,7 @@ kotlin-ksp = "2.0.0-1.0.21"
 kotlin-serialization = "1.6.3"
 ktor = "2.3.11"
 medzik-android-utils = "1.4.0"
+medzik-libcrypto = "1.2.0"
 
 [libraries]
 accompanist-drawablepainter = { module = "com.google.accompanist:accompanist-drawablepainter", version.ref = "accompanist" }
@@ -57,7 +58,9 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 medzik-android-components = { module = "dev.medzik.android:components", version.ref = "medzik-android-utils" }
+medzik-android-crypto = { module = "dev.medzik.android:crypto", version.ref = "medzik-android-utils" }
 medzik-android-utils = { module = "dev.medzik.android:utils", version.ref = "medzik-android-utils" }
+medzik-libcrypto = { module = "dev.medzik:libcrypto", version.ref = "medzik-libcrypto" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
