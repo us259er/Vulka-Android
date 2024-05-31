@@ -61,7 +61,7 @@ class VulcanHebeApi {
         val (certificate,fingerprint,_) = keystore.getData()
 
         val pfxRequest = PfxRequest(
-            OS = "Android",
+            os = "Android",
             deviceModel = keystore.deviceModel,
             certificate = certificate,
             certificateType = "X509",
