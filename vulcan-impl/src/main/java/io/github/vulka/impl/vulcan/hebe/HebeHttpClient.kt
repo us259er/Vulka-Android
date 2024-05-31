@@ -11,8 +11,6 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 import java.net.URLEncoder
 import java.text.SimpleDateFormat
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.regex.Pattern
 
@@ -36,7 +34,7 @@ class HebeHttpClient(private val keystore: HebeKeystore) {
     }
 
     @Throws(IOException::class)
-    private fun buildHeaders(fullUrl: String, body: String?): Headers {
+    private fun buildHeaders(fullUrl: String, body: String? = null): Headers {
         val date = Date()
         val time = SimpleDateFormat("EEE, d MMM yyyy hh:mm:ss", Locale.ENGLISH).apply {
             timeZone = TimeZone.getTimeZone("GMT")
@@ -91,7 +89,7 @@ class HebeHttpClient(private val keystore: HebeKeystore) {
 
         val response = client.newCall(request).execute()
 
-        when (response.code) {
+//        when (response.code) {
 //            200 -> {
 ////                logger.debug("Throw InvalidTokenException")
 //                throw InvalidTokenException()
@@ -116,8 +114,22 @@ class HebeHttpClient(private val keystore: HebeKeystore) {
 ////                logger.debug("Throw VulcanAPIException")
 //                throw VulcanAPIException("")
 //            }
-        }
+//        }
 
+        return response
+    }
+
+    @Throws(IOException::class)
+    fun get(url: String): Response {
+        val headers = buildHeaders(url,url)
+
+        val request = Request.Builder()
+            .url(url)
+            .headers(headers)
+            .get()
+            .build()
+
+        val response = client.newCall(request).execute()
         return response
     }
 }

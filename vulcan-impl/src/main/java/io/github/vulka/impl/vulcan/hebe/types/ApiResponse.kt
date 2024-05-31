@@ -34,4 +34,3 @@ class ApiResponse<T> {
         val message: String,
     )
 }
-
