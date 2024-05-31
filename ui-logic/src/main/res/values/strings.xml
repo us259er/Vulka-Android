@@ -9,4 +9,5 @@
     <string name="Field_Pin" translatable="false">PIN</string>
     <string name="Field_Login" translatable="false">Login</string>
     <string name="Field_Password">Password</string>
+    <string name="Home">Home</string>
 </resources>
