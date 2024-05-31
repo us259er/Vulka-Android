@@ -152,8 +152,6 @@ fun LoginScreen(
                     try {
                         val response = client.login(requestData!!)
 
-                        println(Gson().toJson(response))
-
                         val credentials = Credentials(
                             platform = args.platform,
                             data = Gson().toJson(
