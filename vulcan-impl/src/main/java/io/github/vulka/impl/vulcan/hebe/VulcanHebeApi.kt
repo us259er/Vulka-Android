@@ -3,6 +3,7 @@ package io.github.vulka.impl.vulcan.hebe
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import io.github.vulka.core.api.log.LoggerFactory
 import io.github.vulka.impl.vulcan.Utils
 import io.github.vulka.impl.vulcan.VulcanLoginResponse
 import io.github.vulka.impl.vulcan.hebe.login.HebeKeystore
@@ -11,9 +12,11 @@ import io.github.vulka.impl.vulcan.hebe.types.ApiResponse
 import okhttp3.*
 import java.io.IOException
 
-class VulcanHebeApi @Throws(Exception::class) constructor() {
+class VulcanHebeApi {
+    private val log = LoggerFactory.get(VulcanHebeApi::class.java)
+
     private lateinit var client: HebeHttpClient
-    lateinit var session: VulcanLoginResponse
+    private lateinit var session: VulcanLoginResponse
 
     @Throws(IOException::class)
     fun getBaseUrl(token: String): String? {
@@ -63,15 +66,15 @@ class VulcanHebeApi @Throws(Exception::class) constructor() {
             selfIdentifier = Utils.uuid(fingerprint)
         )
 
-        Log.i("Vulcan API","URL: $fullUrl")
-        Log.i("Vulcan API","Registering to $lowerSymbol")
+        log.info("URL: $fullUrl")
+        log.info("Registering to $lowerSymbol")
 
 
 
         client.post(fullUrl, pfxRequest).use { response ->
-            Log.i("Vulcan API","Response code ${response.code}")
+            log.debug("Response code ${response.code}")
             val body = response.body?.string()
-            Log.i("Vulcan API","Response body $body")
+            log.debug("Response body $body")
 
             val apiResponse = Gson().fromJson<ApiResponse<HebeAccount>>(body, object : TypeToken<ApiResponse<HebeAccount>>() {}.type)
             session = VulcanLoginResponse(apiResponse.envelope,keystore)
