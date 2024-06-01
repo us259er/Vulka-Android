@@ -6,6 +6,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -15,30 +18,25 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavGraph.Companion.findStartDestination
+import dev.medzik.android.components.TextFieldValue
 import dev.medzik.android.components.rememberMutableBoolean
 import dev.medzik.android.components.rememberMutableString
 import dev.medzik.android.components.ui.LoadingButton
+import dev.medzik.android.components.ui.textfield.AnimatedTextField
+import dev.medzik.android.components.ui.textfield.PasswordAnimatedTextField
 import dev.medzik.android.utils.runOnIOThread
 import dev.medzik.android.utils.runOnUiThread
 import io.github.vulka.core.api.Platform
 import io.github.vulka.core.api.RequestData
-import io.github.vulka.database.Credentials
 import io.github.vulka.impl.librus.LibrusLoginClient
 import io.github.vulka.impl.librus.LibrusLoginData
 import io.github.vulka.impl.vulcan.VulcanLoginClient
 import io.github.vulka.impl.vulcan.VulcanLoginData
 import io.github.vulka.impl.vulcan.hebe.login.HebeKeystore
 import io.github.vulka.ui.R
-import io.github.vulka.ui.VulkaViewModel
-import io.github.vulka.ui.common.TextInputField
 import io.github.vulka.ui.crypto.serializeCredentials
-import io.github.vulka.ui.crypto.serializeCredentialsAndEncrypt
-import io.github.vulka.ui.screens.dashboard.Home
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -47,8 +45,7 @@ class Login(val platform: Platform)
 @Composable
 fun LoginScreen(
     args: Login,
-    navController: NavController,
-    viewModel: VulkaViewModel = hiltViewModel()
+    navController: NavController
 ) {
     val client = when (args.platform) {
         Platform.Vulcan -> VulcanLoginClient()
@@ -61,74 +58,58 @@ fun LoginScreen(
 
     var loading by rememberMutableBoolean()
 
-    var vulcanSymbol by rememberMutableString()
-    var vulcanToken by rememberMutableString()
-    var vulcanPin by rememberMutableString()
+    val vulcanSymbol = rememberMutableString()
+    val vulcanToken = rememberMutableString()
+    val vulcanPin = rememberMutableString()
+
+    val librusLogin = rememberMutableString()
+    val librusPassword = rememberMutableString()
 
     Column(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             when (args.platform) {
                 Platform.Vulcan -> {
-                    TextInputField(
+                    AnimatedTextField(
                         label = stringResource(R.string.Field_Symbol),
-                        value = vulcanSymbol,
-                        onValueChange = {
-                            vulcanSymbol = it
-                        },
+                        value = TextFieldValue.fromMutableState(vulcanSymbol),
+                        clearButton = true
                     )
 
-                    TextInputField(
+                    AnimatedTextField(
                         label = stringResource(R.string.Field_Token),
-                        value = vulcanToken,
-                        onValueChange = {
-                            vulcanToken = it
-                        },
+                        value = TextFieldValue.fromMutableState(vulcanToken),
+                        clearButton = true
                     )
 
-                    TextInputField(
+                    AnimatedTextField(
                         label = stringResource(R.string.Field_Pin),
-                        value = vulcanPin,
-                        onValueChange = {
-                            vulcanPin = it
-                        },
+                        value = TextFieldValue.fromMutableState(vulcanPin),
+                        clearButton = true
                     )
                 }
 
                 Platform.Librus -> {
-                    var login by rememberMutableString()
-                    var password by rememberMutableString()
-
-                    TextInputField(
+                    AnimatedTextField(
                         label = stringResource(R.string.Field_Login),
-                        value = login,
-                        onValueChange = {
-                            login = it
-                            requestData = LibrusLoginData(
-                                login = login,
-                                password =  password
+                        value = TextFieldValue.fromMutableState(librusLogin),
+                        clearButton = true,
+                        leading = {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = null
                             )
-                        },
+                        }
                     )
 
-                    TextInputField(
+                    PasswordAnimatedTextField(
                         label = stringResource(R.string.Field_Password),
-                        value = password,
-                        onValueChange = {
-                            password = it
-                            requestData = LibrusLoginData(
-                                login = login,
-                                password =  password
-                            )
-                        },
-                        hidden = true,
-                        keyboardType = KeyboardType.Password
+                        value = TextFieldValue.fromMutableState(librusPassword)
                     )
                 }
             }
@@ -139,20 +120,29 @@ fun LoginScreen(
                 runOnIOThread {
                     loading = true
 
-                    // For Vulcan we must create keystore first
-                    if (args.platform == Platform.Vulcan) {
-                        val keystore = HebeKeystore.create(
-                            context = context,
-                            alias = HebeKeystore.generateKeystoreName(vulcanSymbol),
-                            firebaseToken = "",
-                            deviceModel = "${Build.MANUFACTURER} ${Build.MODEL} (Vulka)")
+                    when (args.platform) {
+                        Platform.Vulcan -> {
+                            // For Vulcan we must create keystore first
+                            val keystore = HebeKeystore.create(
+                                context = context,
+                                alias = HebeKeystore.generateKeystoreName(vulcanSymbol.value),
+                                firebaseToken = "",
+                                deviceModel = "${Build.MANUFACTURER} ${Build.MODEL} (Vulka)")
 
-                        requestData = VulcanLoginData(
-                            symbol = vulcanSymbol,
-                            token = vulcanToken,
-                            pin = vulcanPin,
-                            keystore = keystore
-                        )
+                            requestData = VulcanLoginData(
+                                symbol = vulcanSymbol.value,
+                                token = vulcanToken.value,
+                                pin = vulcanPin.value,
+                                keystore = keystore
+                            )
+                        }
+
+                        Platform.Librus -> {
+                            requestData = LibrusLoginData(
+                                login = librusLogin.value,
+                                password = librusPassword.value
+                            )
+                        }
                     }
 
                     try {
