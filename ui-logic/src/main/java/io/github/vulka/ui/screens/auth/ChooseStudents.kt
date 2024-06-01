@@ -19,8 +19,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.google.gson.Gson
-import dev.medzik.android.components.LoadingButton
 import dev.medzik.android.components.rememberMutableBoolean
+import dev.medzik.android.components.ui.LoadingButton
 import dev.medzik.android.utils.runOnIOThread
 import dev.medzik.android.utils.runOnUiThread
 import io.github.vulka.core.api.Platform
