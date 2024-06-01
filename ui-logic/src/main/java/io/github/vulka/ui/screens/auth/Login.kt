@@ -7,7 +7,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DataObject
+import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.School
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -78,19 +81,37 @@ fun LoginScreen(
                     AnimatedTextField(
                         label = stringResource(R.string.Field_Symbol),
                         value = TextFieldValue.fromMutableState(vulcanSymbol),
-                        clearButton = true
+                        clearButton = true,
+                        leading = {
+                            Icon(
+                                imageVector = Icons.Default.School,
+                                contentDescription = null
+                            )
+                        }
                     )
 
                     AnimatedTextField(
                         label = stringResource(R.string.Field_Token),
                         value = TextFieldValue.fromMutableState(vulcanToken),
-                        clearButton = true
+                        clearButton = true,
+                        leading = {
+                            Icon(
+                                imageVector = Icons.Default.DataObject,
+                                contentDescription = null
+                            )
+                        }
                     )
 
                     AnimatedTextField(
                         label = stringResource(R.string.Field_Pin),
                         value = TextFieldValue.fromMutableState(vulcanPin),
-                        clearButton = true
+                        clearButton = true,
+                        leading = {
+                            Icon(
+                                imageVector = Icons.Default.Password,
+                                contentDescription = null
+                            )
+                        }
                     )
                 }
 
