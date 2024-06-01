@@ -8,7 +8,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
-import dev.medzik.android.components.TopAppBarBackIcon
+import dev.medzik.android.components.icons.TopAppBarBackIcon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
