@@ -12,4 +12,6 @@
     <string name="Home">Home</string>
     <string name="ChooseStudents">Choose students</string>
     <string name="Done">Done</string>
+    <string name="Grades">Grades</string>
+    <string name="Timetable">Timetable</string>
 </resources>

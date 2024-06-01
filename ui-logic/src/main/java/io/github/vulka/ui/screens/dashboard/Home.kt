@@ -1,23 +1,43 @@
 package io.github.vulka.ui.screens.dashboard
 
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Dashboard
+import androidx.compose.material.icons.filled.Dataset
+import androidx.compose.material.icons.filled.Looks6
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.google.gson.Gson
-import dev.medzik.android.utils.runOnIOThread
+import dev.medzik.android.components.rememberMutable
 import io.github.vulka.core.api.Platform
-import io.github.vulka.core.api.response.AccountInfo
+import io.github.vulka.core.api.ResponseData
 import io.github.vulka.impl.librus.LibrusLoginClient
 import io.github.vulka.impl.librus.LibrusLoginData
 import io.github.vulka.impl.librus.LibrusUserClient
-import io.github.vulka.impl.vulcan.VulcanLoginData
 import io.github.vulka.impl.vulcan.VulcanLoginResponse
 import io.github.vulka.impl.vulcan.VulcanUserClient
+import io.github.vulka.ui.R
 import io.github.vulka.ui.VulkaViewModel
 import io.github.vulka.ui.crypto.decryptCredentials
+import io.github.vulka.ui.screens.auth.Login
+import io.github.vulka.ui.utils.navtype.PlatformType
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
+import kotlin.reflect.typeOf
 
 @Serializable
 class Home(
@@ -26,48 +46,103 @@ class Home(
     val credentials: String
 )
 
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     args: Home,
     navController: NavController,
     viewModel: VulkaViewModel = hiltViewModel()
 ) {
+
+    val bottomNavController = rememberNavController()
     val credentials = decryptCredentials(args.credentials)
 
-    val client = when (args.platform) {
-        Platform.Vulcan -> {
-            val loginData = Gson().fromJson(credentials, VulcanLoginResponse::class.java)
-            VulcanUserClient(loginData)
-        }
-        Platform.Librus -> {
-            val loginData = Gson().fromJson(credentials, LibrusLoginData::class.java)
+    // TODO: make something better (Not string based)
+    var bottomSelected by rememberMutable("start")
 
-            // TODO: do not block main-thread
-            runBlocking {
-                val loginResponse = LibrusLoginClient().login(loginData)
-                LibrusUserClient(loginResponse.cookies)
-            }
-        }
-    }
-
-    when (args.platform) {
-        Platform.Librus -> {
-            var accountInfo: AccountInfo? by remember { mutableStateOf(null) }
-
-            LaunchedEffect(Unit) {
-                runOnIOThread {
-                    accountInfo = client.getAccountInfo()
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = when (bottomSelected) {
+                            "start" -> stringResource(R.string.Home)
+                            "grades" -> stringResource(R.string.Grades)
+                            "timetable" -> stringResource(R.string.Timetable)
+                            else -> ""
+                        }
+                    )
                 }
-            }
-
-            if (accountInfo != null) {
-                Text(accountInfo!!.fullName)
-                Text(accountInfo!!.className)
+            )
+        },
+        bottomBar = {
+            NavigationBar {
+                NavigationBarItem(
+                    alwaysShowLabel = true,
+                    icon = { Icon(
+                        imageVector = Icons.Default.Dashboard,
+                        contentDescription = null
+                    ) },
+                    label = { Text(stringResource(R.string.Home)) },
+                    selected = bottomSelected == "start" ,
+                    onClick = {
+                        bottomSelected = "start"
+                        bottomNavController.navigate(Start(
+                            platform = args.platform,
+                            credentials
+                        ))
+                    }
+                )
+                NavigationBarItem(
+                    alwaysShowLabel = true,
+                    icon = { Icon(
+                        imageVector = Icons.Default.Looks6,
+                        contentDescription = null
+                    ) },
+                    label = { Text(stringResource(R.string.Grades)) },
+                    selected = bottomSelected == "grades",
+                    onClick = {
+                        bottomSelected = "grades"
+                        bottomNavController.navigate(Grades)
+                    }
+                )
+                NavigationBarItem(
+                    alwaysShowLabel = true,
+                    icon = { Icon(
+                        imageVector = Icons.Default.Dataset,
+                        contentDescription = null
+                    ) },
+                    label = { Text(stringResource(R.string.Timetable)) },
+                    selected = bottomSelected == "timetable",
+                    onClick = {
+                        bottomSelected = "timetable"
+                        bottomNavController.navigate(Timetable)
+                    }
+                )
             }
         }
-
-        Platform.Vulcan -> {
-            Text(text = credentials)
+    ) { innerPadding ->
+        NavHost(
+            bottomNavController,
+            startDestination = Start(
+                platform = args.platform,
+                credentials
+            ),
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            composable<Start>(
+                typeMap = mapOf(typeOf<Platform>() to PlatformType)
+            ) {
+                val arg = it.toRoute<Start>()
+                StartScreen(arg)
+            }
+            composable<Grades> {
+                GradesScreen()
+            }
+            composable<Timetable> {
+                TimetableScreen()
+            }
         }
     }
 }

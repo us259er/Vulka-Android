@@ -130,19 +130,7 @@ fun VulkaNavigation(viewModel: VulkaViewModel = hiltViewModel()) {
         ) {
             val args = it.toRoute<Home>()
 
-            DefaultScaffold(
-                topBar = {
-                    TopAppBar(
-                        title = {
-                            Text(
-                                text = stringResource(R.string.Home)
-                            )
-                        }
-                    )
-                }
-            ) {
-                HomeScreen(args, navController)
-            }
+            HomeScreen(args, navController)
         }
     }
 }
