@@ -78,7 +78,10 @@ fun ChooseStudentsScreen(
                 .fillMaxWidth()
         ) {
             students.forEach { student ->
-                Text(text = "${student.fullName} - ${student.parent!!.name} - ${if (student.isParent) "Rodzic" else "Uczeń"}")
+                if (student.isParent)
+                    Text(text = "${student.fullName} - ${student.parent!!.name} - Rodzic")
+                else
+                    Text(text = "${student.fullName} - Uczeń")
             }
         }
 
