@@ -19,6 +19,8 @@ import io.github.vulka.ui.common.DefaultScaffold
 import io.github.vulka.ui.common.TopAppBarWithBack
 import io.github.vulka.ui.screens.Welcome
 import io.github.vulka.ui.screens.WelcomeScreen
+import io.github.vulka.ui.screens.auth.ChooseStudents
+import io.github.vulka.ui.screens.auth.ChooseStudentsScreen
 import io.github.vulka.ui.screens.auth.Login
 import io.github.vulka.ui.screens.auth.LoginScreen
 import io.github.vulka.ui.screens.dashboard.Home
@@ -42,6 +44,12 @@ fun VulkaNavigation(viewModel: VulkaViewModel = hiltViewModel()) {
                 userId = credentials.id.toString(),
                 credentials = credentials.data
             )
+
+//            ChooseStudents(
+//                platform = credentials.platform,
+//                credentials = credentials.data,
+//                userId = credentials.id.toString()
+//            )
         } else {
             Welcome
         }
@@ -94,6 +102,26 @@ fun VulkaNavigation(viewModel: VulkaViewModel = hiltViewModel()) {
                 }
             ) {
                 LoginScreen(args, navController)
+            }
+        }
+
+        composable<ChooseStudents>(
+            typeMap = mapOf(typeOf<Platform>() to PlatformType)
+        ) {
+            val args = it.toRoute<ChooseStudents>()
+
+            DefaultScaffold(
+                topBar = {
+                    TopAppBar(
+                        title = {
+                            Text(
+                                text = stringResource(R.string.ChooseStudents)
+                            )
+                        }
+                    )
+                }
+            ) {
+                ChooseStudentsScreen(args, navController)
             }
         }
 

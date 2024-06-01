@@ -36,6 +36,7 @@ import io.github.vulka.impl.vulcan.hebe.login.HebeKeystore
 import io.github.vulka.ui.R
 import io.github.vulka.ui.VulkaViewModel
 import io.github.vulka.ui.common.TextInputField
+import io.github.vulka.ui.crypto.serializeCredentials
 import io.github.vulka.ui.crypto.serializeCredentialsAndEncrypt
 import io.github.vulka.ui.screens.dashboard.Home
 import kotlinx.serialization.Serializable
@@ -155,28 +156,19 @@ fun LoginScreen(
                     }
 
                     try {
+                        // Credentials will be encrypted in ChooseStudents screen,
+                        // because Vulcan implementation must encrypt credentials for every student,
+                        // then can save it to Room database
+                        // Currently encrypts only one credential
                         val response = client.login(requestData!!)
 
-                        val credentials = Credentials(
-                            platform = args.platform,
-                            data = serializeCredentialsAndEncrypt(response)
-                        )
-
-                        viewModel.credentialRepository.insert(credentials)
+                        val data = serializeCredentials(response)
 
                         runOnUiThread {
-                            navController.navigate(
-                                Home(
-                                    platform = credentials.platform,
-                                    userId = credentials.id.toString(),
-                                    credentials = credentials.data
-                                )
-                            ) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = false
-                                    inclusive = true
-                                }
-                            }
+                            navController.navigate(ChooseStudents(
+                                platform = args.platform,
+                                credentialsData = data
+                            ))
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()

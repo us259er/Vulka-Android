@@ -97,7 +97,7 @@ class VulcanHebeApi {
 
         client.get(fullUrl).use {
             val body = it.body?.string()
-            println(body)
+            log.debug(body!!)
             val apiResponse = Gson().fromJson<ApiResponse<Array<HebeStudent>>>(body, object : TypeToken<ApiResponse<Array<HebeStudent>>>() {}.type)
             log.info("Code: ${it.code}")
             return apiResponse.envelope!!

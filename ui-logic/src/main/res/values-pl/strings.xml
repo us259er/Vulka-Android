@@ -4,4 +4,6 @@
     <string name="Login">Zaloguj się</string>
     <string name="Field_Password">Hasło</string>
     <string name="Home">Start</string>
+    <string name="ChooseStudents">Wybierz uczniów</string>
+    <string name="Done">Gotowe</string>
 </resources>

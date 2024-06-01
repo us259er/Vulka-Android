@@ -27,6 +27,17 @@ fun serializeCredentialsAndEncrypt(response: ResponseData): String {
     return cipherData.initializationVector + cipherData.cipherText
 }
 
+// TODO: maybe move somewhere else
+fun serializeCredentials(response: ResponseData): String {
+    return Gson().toJson(
+        when (response) {
+            is VulcanLoginResponse -> response
+            is LibrusLoginResponse -> response.request
+            else -> throw IllegalStateException()
+        }
+    )
+}
+
 fun decryptCredentials(cipherData: String): String {
     // initialization vector length in hex string
     val ivLength = 12 * 2

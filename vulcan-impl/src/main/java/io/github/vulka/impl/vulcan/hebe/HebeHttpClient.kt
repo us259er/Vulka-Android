@@ -1,5 +1,6 @@
 package io.github.vulka.impl.vulcan.hebe
 
+import android.util.Log
 import com.google.gson.Gson
 import io.github.vulka.impl.*
 import io.github.vulka.impl.vulcan.*
@@ -11,6 +12,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 import java.net.URLEncoder
 import java.text.SimpleDateFormat
+import java.time.ZonedDateTime
 import java.util.*
 import java.util.regex.Pattern
 
@@ -35,7 +37,7 @@ class HebeHttpClient(private val keystore: HebeKeystore) {
 
     @Throws(IOException::class)
     private fun buildHeaders(fullUrl: String, body: String? = null): Headers {
-        val date = Date()
+        val date = Date.from(ZonedDateTime.now().toInstant())
         val time = SimpleDateFormat("EEE, d MMM yyyy hh:mm:ss", Locale.ENGLISH).apply {
             timeZone = TimeZone.getTimeZone("GMT")
         }.format(date) + " GMT"
@@ -52,7 +54,7 @@ class HebeHttpClient(private val keystore: HebeKeystore) {
             .add("vCanonicalUrl", canonicalUrl )
             .add("Signature", signature)
 
-        body?.let {
+        if (body != null) {
             headersBuilder
                 .add("Digest", digest)
                 .add("Content-Type", "application/json")
@@ -121,7 +123,7 @@ class HebeHttpClient(private val keystore: HebeKeystore) {
 
     @Throws(IOException::class)
     fun get(url: String): Response {
-        val headers = buildHeaders(url,url)
+        val headers = buildHeaders(url,null)
 
         val request = Request.Builder()
             .url(url)

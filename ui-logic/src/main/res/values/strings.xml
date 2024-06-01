@@ -10,4 +10,6 @@
     <string name="Field_Login" translatable="false">Login</string>
     <string name="Field_Password">Password</string>
     <string name="Home">Home</string>
+    <string name="ChooseStudents">Choose students</string>
+    <string name="Done">Done</string>
 </resources>
