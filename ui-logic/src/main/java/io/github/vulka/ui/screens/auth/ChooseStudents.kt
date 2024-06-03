@@ -26,9 +26,9 @@ import dev.medzik.android.utils.runOnUiThread
 import io.github.vulka.core.api.Platform
 import io.github.vulka.core.api.types.Student
 import io.github.vulka.database.Credentials
-import io.github.vulka.impl.librus.LibrusLoginResponse
+import io.github.vulka.impl.librus.LibrusLoginCredentials
 import io.github.vulka.impl.librus.LibrusUserClient
-import io.github.vulka.impl.vulcan.VulcanLoginResponse
+import io.github.vulka.impl.vulcan.VulcanLoginCredentials
 import io.github.vulka.impl.vulcan.VulcanUserClient
 import io.github.vulka.ui.R
 import io.github.vulka.ui.VulkaViewModel
@@ -49,13 +49,13 @@ fun ChooseStudentsScreen(
     viewModel: VulkaViewModel = hiltViewModel()
 ) {
     val credentials = when (args.platform) {
-        Platform.Vulcan -> Gson().fromJson(args.credentialsData, VulcanLoginResponse::class.java)
-        Platform.Librus -> Gson().fromJson(args.credentialsData, LibrusLoginResponse::class.java)
+        Platform.Vulcan -> Gson().fromJson(args.credentialsData, VulcanLoginCredentials::class.java)
+        Platform.Librus -> Gson().fromJson(args.credentialsData, LibrusLoginCredentials::class.java)
     }
 
     val client = when (args.platform) {
-        Platform.Vulcan -> VulcanUserClient(credentials as VulcanLoginResponse)
-        Platform.Librus -> LibrusUserClient((credentials as LibrusLoginResponse).cookies)
+        Platform.Vulcan -> VulcanUserClient(credentials as VulcanLoginCredentials)
+        Platform.Librus -> LibrusUserClient((credentials as LibrusLoginCredentials).cookies)
     }
 
     val students = remember { mutableStateListOf<Student>()}

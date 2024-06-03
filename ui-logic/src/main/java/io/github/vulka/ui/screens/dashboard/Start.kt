@@ -11,11 +11,11 @@ import com.google.gson.Gson
 import dev.medzik.android.utils.runOnIOThread
 import io.github.vulka.core.api.Platform
 import io.github.vulka.core.api.response.AccountInfo
-import io.github.vulka.database.Credentials
 import io.github.vulka.impl.librus.LibrusLoginClient
 import io.github.vulka.impl.librus.LibrusLoginData
+import io.github.vulka.impl.librus.LibrusLoginCredentials
 import io.github.vulka.impl.librus.LibrusUserClient
-import io.github.vulka.impl.vulcan.VulcanLoginResponse
+import io.github.vulka.impl.vulcan.VulcanLoginCredentials
 import io.github.vulka.impl.vulcan.VulcanUserClient
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
@@ -30,7 +30,7 @@ fun StartScreen(args: Start) {
 
     val client = when (args.platform) {
         Platform.Vulcan -> {
-            val loginData = Gson().fromJson(credentials, VulcanLoginResponse::class.java)
+            val loginData = Gson().fromJson(credentials, VulcanLoginCredentials::class.java)
             VulcanUserClient(loginData)
         }
         Platform.Librus -> {
@@ -38,7 +38,7 @@ fun StartScreen(args: Start) {
 
             // TODO: do not block main-thread
             runBlocking {
-                val loginResponse = LibrusLoginClient().login(loginData)
+                val loginResponse = LibrusLoginClient().login(loginData) as LibrusLoginCredentials
                 LibrusUserClient(loginResponse.cookies)
             }
         }

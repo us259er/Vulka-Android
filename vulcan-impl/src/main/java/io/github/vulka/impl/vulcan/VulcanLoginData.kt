@@ -1,6 +1,6 @@
 package io.github.vulka.impl.vulcan
 
-import io.github.vulka.core.api.RequestData
+import io.github.vulka.core.api.LoginData
 import io.github.vulka.impl.vulcan.hebe.login.HebeKeystore
 
 class VulcanLoginData(
@@ -8,4 +8,4 @@ class VulcanLoginData(
     val token: String,
     val pin: String,
     val keystore: HebeKeystore
-) : RequestData
+) : LoginData()

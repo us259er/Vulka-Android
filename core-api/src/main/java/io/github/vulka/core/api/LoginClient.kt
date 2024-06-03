@@ -4,5 +4,5 @@ open class LoginData
 open class LoginCredentials
 
 interface LoginClient {
-    suspend fun login(data: RequestData): ResponseData
+    suspend fun login(data: LoginData): LoginCredentials
 }

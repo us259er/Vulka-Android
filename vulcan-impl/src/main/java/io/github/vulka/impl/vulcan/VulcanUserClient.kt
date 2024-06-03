@@ -1,5 +1,7 @@
 package io.github.vulka.impl.vulcan
 
+import io.github.vulka.core.api.LoginCredentials
+import io.github.vulka.core.api.LoginData
 import io.github.vulka.core.api.UserClient
 import io.github.vulka.core.api.response.AccountInfo
 import io.github.vulka.core.api.types.Parent
@@ -7,7 +9,7 @@ import io.github.vulka.core.api.types.Student
 import io.github.vulka.impl.vulcan.hebe.VulcanHebeApi
 
 class VulcanUserClient(
-    credentials: VulcanLoginResponse
+    credentials: VulcanLoginCredentials
 ) : UserClient {
     val api = VulcanHebeApi()
 
@@ -37,4 +39,8 @@ class VulcanUserClient(
     override suspend fun getAccountInfo(): AccountInfo {
         TODO("Not yet implemented")
     }
+}
+
+fun UserClient.getVulcan(credentials: VulcanLoginCredentials): UserClient {
+    return VulcanUserClient(credentials)
 }

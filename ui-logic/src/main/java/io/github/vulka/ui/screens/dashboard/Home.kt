@@ -21,21 +21,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.google.gson.Gson
 import dev.medzik.android.components.rememberMutable
 import io.github.vulka.core.api.Platform
-import io.github.vulka.core.api.ResponseData
-import io.github.vulka.impl.librus.LibrusLoginClient
-import io.github.vulka.impl.librus.LibrusLoginData
-import io.github.vulka.impl.librus.LibrusUserClient
-import io.github.vulka.impl.vulcan.VulcanLoginResponse
-import io.github.vulka.impl.vulcan.VulcanUserClient
 import io.github.vulka.ui.R
 import io.github.vulka.ui.VulkaViewModel
 import io.github.vulka.ui.crypto.decryptCredentials
-import io.github.vulka.ui.screens.auth.Login
 import io.github.vulka.ui.utils.navtype.PlatformType
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlin.reflect.typeOf
 

@@ -31,8 +31,8 @@ import dev.medzik.android.components.ui.textfield.AnimatedTextField
 import dev.medzik.android.components.ui.textfield.PasswordAnimatedTextField
 import dev.medzik.android.utils.runOnIOThread
 import dev.medzik.android.utils.runOnUiThread
+import io.github.vulka.core.api.LoginData
 import io.github.vulka.core.api.Platform
-import io.github.vulka.core.api.RequestData
 import io.github.vulka.impl.librus.LibrusLoginClient
 import io.github.vulka.impl.librus.LibrusLoginData
 import io.github.vulka.impl.vulcan.VulcanLoginClient
@@ -57,7 +57,7 @@ fun LoginScreen(
 
     val context = LocalContext.current
 
-    var requestData: RequestData? by remember { mutableStateOf(null) }
+    var requestData: LoginData? by remember { mutableStateOf(null) }
 
     var loading by rememberMutableBoolean()
 

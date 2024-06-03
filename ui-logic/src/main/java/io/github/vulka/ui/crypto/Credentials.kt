@@ -4,19 +4,19 @@ import com.google.gson.Gson
 import dev.medzik.android.crypto.KeyStore
 import dev.medzik.android.crypto.KeyStoreAlias
 import dev.medzik.libcrypto.Hex
-import io.github.vulka.core.api.ResponseData
-import io.github.vulka.impl.librus.LibrusLoginResponse
-import io.github.vulka.impl.vulcan.VulcanLoginResponse
+import io.github.vulka.core.api.LoginCredentials
+import io.github.vulka.impl.librus.LibrusLoginCredentials
+import io.github.vulka.impl.vulcan.VulcanLoginCredentials
 
 object CredentialsKeyStore : KeyStoreAlias {
     override val name: String = "credentials"
 }
 
-fun serializeCredentialsAndEncrypt(response: ResponseData): String {
+fun serializeCredentialsAndEncrypt(response: LoginCredentials): String {
     val json = Gson().toJson(
         when (response) {
-            is VulcanLoginResponse -> response
-            is LibrusLoginResponse -> response.request
+            is VulcanLoginCredentials -> response
+            is LibrusLoginCredentials -> response.request
             else -> throw IllegalStateException()
         }
     )
@@ -28,11 +28,11 @@ fun serializeCredentialsAndEncrypt(response: ResponseData): String {
 }
 
 // TODO: maybe move somewhere else
-fun serializeCredentials(response: ResponseData): String {
+fun serializeCredentials(response: LoginCredentials): String {
     return Gson().toJson(
         when (response) {
-            is VulcanLoginResponse -> response
-            is LibrusLoginResponse -> response.request
+            is VulcanLoginCredentials -> response
+            is LibrusLoginCredentials -> response.request
             else -> throw IllegalStateException()
         }
     )

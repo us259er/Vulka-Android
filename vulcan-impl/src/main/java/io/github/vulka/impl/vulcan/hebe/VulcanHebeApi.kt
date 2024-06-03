@@ -4,7 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.github.vulka.core.api.log.LoggerFactory
 import io.github.vulka.impl.vulcan.Utils
-import io.github.vulka.impl.vulcan.VulcanLoginResponse
+import io.github.vulka.impl.vulcan.VulcanLoginCredentials
 import io.github.vulka.impl.vulcan.hebe.login.HebeKeystore
 import io.github.vulka.impl.vulcan.hebe.login.PfxRequest
 import io.github.vulka.impl.vulcan.hebe.types.ApiResponse
@@ -16,9 +16,9 @@ class VulcanHebeApi {
     private val log = LoggerFactory.get(VulcanHebeApi::class.java)
 
     private lateinit var client: HebeHttpClient
-    private lateinit var credentials: VulcanLoginResponse
+    private lateinit var credentials: VulcanLoginCredentials
 
-    fun setup(credentials: VulcanLoginResponse) {
+    fun setup(credentials: VulcanLoginCredentials) {
         client = HebeHttpClient(credentials.keystore)
         this.credentials = credentials
     }
@@ -82,7 +82,7 @@ class VulcanHebeApi {
 
             val apiResponse = Gson().fromJson<ApiResponse<HebeAccount>>(body, object : TypeToken<ApiResponse<HebeAccount>>() {}.type)
             if (apiResponse.envelope != null)
-                credentials = VulcanLoginResponse(apiResponse.envelope!!,keystore)
+                credentials = VulcanLoginCredentials(apiResponse.envelope!!,keystore)
 
             return apiResponse
         }
