@@ -82,6 +82,7 @@ fun LoginScreen(
                         label = stringResource(R.string.Field_Symbol),
                         value = TextFieldValue.fromMutableState(vulcanSymbol),
                         clearButton = true,
+                        singleLine = true,
                         leading = {
                             Icon(
                                 imageVector = Icons.Default.School,
@@ -94,6 +95,7 @@ fun LoginScreen(
                         label = stringResource(R.string.Field_Token),
                         value = TextFieldValue.fromMutableState(vulcanToken),
                         clearButton = true,
+                        singleLine = true,
                         leading = {
                             Icon(
                                 imageVector = Icons.Default.DataObject,
@@ -106,6 +108,7 @@ fun LoginScreen(
                         label = stringResource(R.string.Field_Pin),
                         value = TextFieldValue.fromMutableState(vulcanPin),
                         clearButton = true,
+                        singleLine = true,
                         leading = {
                             Icon(
                                 imageVector = Icons.Default.Password,
@@ -120,6 +123,7 @@ fun LoginScreen(
                         label = stringResource(R.string.Field_Login),
                         value = TextFieldValue.fromMutableState(librusLogin),
                         clearButton = true,
+                        singleLine = true,
                         leading = {
                             Icon(
                                 imageVector = Icons.Default.Person,
