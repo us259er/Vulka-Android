@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import dev.medzik.android.components.ui.PreferenceEntry
@@ -51,7 +52,7 @@ fun WelcomeScreen(navController: NavController) {
             )
 
             PreferenceEntry(
-                icon = { Icon(Icons.AutoMirrored.Filled.Login, contentDescription = null) },
+                icon = { Icon(painterResource(R.drawable.librus_logo), contentDescription = null) },
                 title = stringResource(R.string.Librus),
                 onClick = { navController.navigate(Login(Platform.Librus)) }
             )
