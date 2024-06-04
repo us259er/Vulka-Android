@@ -2,6 +2,7 @@ package io.github.vulka.ui.screens.dashboard
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Backpack
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Dataset
 import androidx.compose.material.icons.filled.Looks6
@@ -101,7 +102,7 @@ fun HomeScreen(
                 NavigationBarItem(
                     alwaysShowLabel = true,
                     icon = { Icon(
-                        imageVector = Icons.Default.Dataset,
+                        imageVector = Icons.Default.Backpack,
                         contentDescription = null
                     ) },
                     label = { Text(stringResource(R.string.Timetable)) },
