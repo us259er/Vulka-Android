@@ -1,3 +1,3 @@
 # Vulka
 
-Yet another UONET+ Vulcan client
+Yet another UONET+ Vulcan and Librus Synergia client
