@@ -14,4 +14,6 @@
     <string name="Done">Done</string>
     <string name="Grades">Grades</string>
     <string name="Timetable">Timetable</string>
+    <string name="Parent">Parent</string>
+    <string name="Student">Student</string>
 </resources>

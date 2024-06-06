@@ -2,9 +2,11 @@ package io.github.vulka.ui.screens.auth
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -12,9 +14,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -59,11 +63,13 @@ fun ChooseStudentsScreen(
     }
 
     val students = remember { mutableStateListOf<Student>()}
+    val selectedStudents = remember { mutableStateListOf<Student>() }
 
     LaunchedEffect(Unit) {
         runOnIOThread {
             client.getStudents().forEach {
                 students.add(it)
+                selectedStudents.add(it)
             }
         }
     }
@@ -78,10 +84,7 @@ fun ChooseStudentsScreen(
                 .fillMaxWidth()
         ) {
             students.forEach { student ->
-                if (student.isParent)
-                    Text(text = "${student.fullName} - ${student.parent!!.name} - Rodzic")
-                else
-                    Text(text = "${student.fullName} - Uczeń")
+                StudentBox(student,selectedStudents)
             }
         }
 
@@ -92,8 +95,12 @@ fun ChooseStudentsScreen(
                 runOnIOThread {
                     loading = true
 
+                    // TODO: change to for loop
+                    val student = selectedStudents[0]
+
                     val encryptedCredentials = Credentials(
                         platform = args.platform,
+                        student = student,
                         data = serializeCredentialsAndEncrypt(credentials)
                     )
 
@@ -127,3 +134,32 @@ fun ChooseStudentsScreen(
         }
     }
 }
+
+@Composable
+fun StudentBox(student: Student,studentsList: MutableList<Student>) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Checkbox(
+            checked = studentsList.contains(student),
+            onCheckedChange = {  if (it) studentsList.add(student) else studentsList.remove(student) }
+        )
+
+        Column {
+            if (student.isParent) {
+                Text(student.parent!!.name)
+                Text(
+                    text = "${student.fullName} - ${stringResource(R.string.Parent)}",
+                    fontSize = 12.sp
+                )
+            } else {
+                Text(student.fullName)
+                Text(
+                    text = stringResource(R.string.Student),
+                    fontSize = 12.sp
+                )
+            }
+        }
+    }
+}
+

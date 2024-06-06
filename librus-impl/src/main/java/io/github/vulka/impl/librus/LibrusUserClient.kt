@@ -12,6 +12,7 @@ import io.ktor.http.*
 import org.jsoup.Jsoup
 
 class LibrusUserClient(
+    // TODO: Change to LibrusLoginCredentials
     private val cookies: List<Cookie>
 ) : UserClient {
     private val client = HttpClient(OkHttp) {

@@ -8,4 +8,6 @@
     <string name="Done">Gotowe</string>
     <string name="Grades">Oceny</string>
     <string name="Timetable">Plan lekcji</string>
+    <string name="Parent">Rodzic</string>
+    <string name="Student">Uczeń</string>
 </resources>
