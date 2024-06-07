@@ -40,7 +40,3 @@ class VulcanUserClient(
         TODO("Not yet implemented")
     }
 }
-
-fun UserClient.getVulcan(credentials: VulcanLoginCredentials): UserClient {
-    return VulcanUserClient(credentials)
-}
