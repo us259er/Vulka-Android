@@ -2,10 +2,10 @@ package io.github.vulka.ui.screens.auth
 
 import android.os.Build
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DataObject
 import androidx.compose.material.icons.filled.Password
@@ -68,17 +68,15 @@ fun LoginScreen(
     val librusLogin = rememberMutableString()
     val librusPassword = rememberMutableString()
 
-    Column(
+    LazyColumn(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
+        item {
             when (args.platform) {
                 Platform.Vulcan -> {
                     AnimatedTextField(
+                        modifier = Modifier.padding(vertical = 5.dp),
                         label = stringResource(R.string.Field_Symbol),
                         value = TextFieldValue.fromMutableState(vulcanSymbol),
                         clearButton = true,
@@ -92,6 +90,7 @@ fun LoginScreen(
                     )
 
                     AnimatedTextField(
+                        modifier = Modifier.padding(vertical = 5.dp),
                         label = stringResource(R.string.Field_Token),
                         value = TextFieldValue.fromMutableState(vulcanToken),
                         clearButton = true,
@@ -105,6 +104,7 @@ fun LoginScreen(
                     )
 
                     AnimatedTextField(
+                        modifier = Modifier.padding(vertical = 5.dp),
                         label = stringResource(R.string.Field_Pin),
                         value = TextFieldValue.fromMutableState(vulcanPin),
                         clearButton = true,
@@ -120,6 +120,7 @@ fun LoginScreen(
 
                 Platform.Librus -> {
                     AnimatedTextField(
+                        modifier = Modifier.padding(vertical = 5.dp),
                         label = stringResource(R.string.Field_Login),
                         value = TextFieldValue.fromMutableState(librusLogin),
                         clearButton = true,
@@ -133,6 +134,7 @@ fun LoginScreen(
                     )
 
                     PasswordAnimatedTextField(
+                        modifier = Modifier.padding(vertical = 5.dp),
                         label = stringResource(R.string.Field_Password),
                         value = TextFieldValue.fromMutableState(librusPassword)
                     )
@@ -140,64 +142,66 @@ fun LoginScreen(
             }
         }
 
-        LoadingButton(
-            onClick = {
-                runOnIOThread {
-                    loading = true
+        item {
+            LoadingButton(
+                onClick = {
+                    runOnIOThread {
+                        loading = true
 
-                    when (args.platform) {
-                        Platform.Vulcan -> {
-                            // For Vulcan we must create keystore first
-                            val keystore = HebeKeystore.create(
-                                context = context,
-                                alias = HebeKeystore.generateKeystoreName(vulcanSymbol.value),
-                                firebaseToken = "",
-                                deviceModel = "${Build.MANUFACTURER} ${Build.MODEL} (Vulka)")
+                        when (args.platform) {
+                            Platform.Vulcan -> {
+                                // For Vulcan we must create keystore first
+                                val keystore = HebeKeystore.create(
+                                    context = context,
+                                    alias = HebeKeystore.generateKeystoreName(vulcanSymbol.value),
+                                    firebaseToken = "",
+                                    deviceModel = "${Build.MANUFACTURER} ${Build.MODEL} (Vulka)")
 
-                            requestData = VulcanLoginData(
-                                symbol = vulcanSymbol.value,
-                                token = vulcanToken.value,
-                                pin = vulcanPin.value,
-                                keystore = keystore
-                            )
+                                requestData = VulcanLoginData(
+                                    symbol = vulcanSymbol.value,
+                                    token = vulcanToken.value,
+                                    pin = vulcanPin.value,
+                                    keystore = keystore
+                                )
+                            }
+
+                            Platform.Librus -> {
+                                requestData = LibrusLoginData(
+                                    login = librusLogin.value,
+                                    password = librusPassword.value
+                                )
+                            }
                         }
 
-                        Platform.Librus -> {
-                            requestData = LibrusLoginData(
-                                login = librusLogin.value,
-                                password = librusPassword.value
-                            )
+                        try {
+                            // Credentials will be encrypted in ChooseStudents screen,
+                            // because Vulcan implementation must encrypt credentials for every student,
+                            // then can save it to Room database
+                            // Currently encrypts only one credential
+                            val response = client.login(requestData!!)
+
+                            val data = serializeCredentials(response)
+
+                            runOnUiThread {
+                                navController.navigate(ChooseStudents(
+                                    platform = args.platform,
+                                    credentialsData = data
+                                ))
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                         }
+
+                        loading = false
                     }
-
-                    try {
-                        // Credentials will be encrypted in ChooseStudents screen,
-                        // because Vulcan implementation must encrypt credentials for every student,
-                        // then can save it to Room database
-                        // Currently encrypts only one credential
-                        val response = client.login(requestData!!)
-
-                        val data = serializeCredentials(response)
-
-                        runOnUiThread {
-                            navController.navigate(ChooseStudents(
-                                platform = args.platform,
-                                credentialsData = data
-                            ))
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-
-                    loading = false
-                }
-            },
-            loading = loading,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            Text(stringResource(R.string.Login))
+                },
+                loading = loading,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text(stringResource(R.string.Login))
+            }
         }
     }
 }
