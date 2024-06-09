@@ -16,7 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
-import dev.medzik.android.components.ui.PreferenceEntry
+import dev.medzik.android.components.ui.IconBox
+import dev.medzik.android.components.ui.preference.BasicPreference
 import io.github.vulka.core.api.Platform
 import io.github.vulka.ui.R
 import io.github.vulka.ui.screens.auth.Login
@@ -45,14 +46,14 @@ fun WelcomeScreen(navController: NavController) {
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            PreferenceEntry(
-                icon = { Icon(Icons.AutoMirrored.Filled.Login, contentDescription = null) },
+            BasicPreference(
+                leading = { IconBox(Icons.AutoMirrored.Filled.Login) },
                 title = stringResource(R.string.Vulcan),
                 onClick = { navController.navigate(Login(Platform.Vulcan)) }
             )
 
-            PreferenceEntry(
-                icon = { Icon(painterResource(R.drawable.librus_logo), contentDescription = null) },
+            BasicPreference(
+                leading = { Icon(painterResource(R.drawable.librus_logo), contentDescription = null) },
                 title = stringResource(R.string.Librus),
                 onClick = { navController.navigate(Login(Platform.Librus)) }
             )
