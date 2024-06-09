@@ -12,6 +12,8 @@ import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import dev.medzik.android.components.TextFieldValue
+import dev.medzik.android.components.color.combineAlpha
 import dev.medzik.android.components.rememberMutableBoolean
 import dev.medzik.android.components.rememberMutableString
 import dev.medzik.android.components.ui.LoadingButton
@@ -119,6 +122,19 @@ fun LoginScreen(
                 }
 
                 Platform.Librus -> {
+                    Surface(
+                        modifier = Modifier.padding(bottom = 12.dp),
+                        shape = MaterialTheme.shapes.medium,
+                        color = MaterialTheme.colorScheme.tertiary.combineAlpha(0.9f)
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(12.dp),
+                            text = "Aby zalogować się do aplikacji, użyj tych samych danych, których używasz do logowania się na stronie internetowej Librus Synergia: https://portal.librus.pl/rodzina/synergia/loguj.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onTertiary.combineAlpha(0.9f)
+                        )
+                    }
+
                     AnimatedTextField(
                         modifier = Modifier.padding(vertical = 5.dp),
                         label = stringResource(R.string.Field_Login),
