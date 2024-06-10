@@ -1,7 +1,5 @@
 package io.github.vulka.ui
 
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -33,8 +31,6 @@ import kotlin.reflect.typeOf
 fun VulkaNavigation(viewModel: VulkaViewModel = hiltViewModel()) {
     val navController = rememberNavController()
 
-    val transmissionDurationMills = 400
-
     fun getStartDestination(): Any {
         val credentials = viewModel.credentialRepository.get()
 
@@ -60,28 +56,16 @@ fun VulkaNavigation(viewModel: VulkaViewModel = hiltViewModel()) {
         startDestination = getStartDestination(),
         modifier = Modifier.imePadding(),
         enterTransition = {
-            slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Left,
-                animationSpec = tween(transmissionDurationMills)
-            )
+            NavigationAnimations.enterTransition()
         },
         exitTransition = {
-            slideOutOfContainer(
-                AnimatedContentTransitionScope.SlideDirection.Left,
-                animationSpec = tween(transmissionDurationMills)
-            )
+            NavigationAnimations.exitTransition()
         },
         popEnterTransition = {
-            slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Right,
-                animationSpec = tween(transmissionDurationMills)
-            )
+            NavigationAnimations.popEnterTransition()
         },
         popExitTransition = {
-            slideOutOfContainer(
-                AnimatedContentTransitionScope.SlideDirection.Right,
-                animationSpec = tween(transmissionDurationMills)
-            )
+            NavigationAnimations.popExitTransition()
         }
     ) {
         composable<Welcome> {
