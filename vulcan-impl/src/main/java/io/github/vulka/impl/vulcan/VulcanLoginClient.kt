@@ -12,6 +12,6 @@ class VulcanLoginClient : LoginClient {
         val loginData = data as VulcanLoginData
         val response = api.register(loginData.keystore, loginData.symbol, loginData.token, loginData.pin)
 
-        return VulcanLoginCredentials(response.envelope!!,data.keystore)
+        return VulcanLoginCredentials(response,data.keystore)
     }
 }

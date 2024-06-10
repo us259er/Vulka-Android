@@ -1,6 +1,7 @@
 package io.github.vulka.impl.vulcan.hebe.types
 
 import com.google.gson.annotations.SerializedName
+import io.github.vulka.core.api.types.StudentImpl
 
 data class HebeStudent(
     @SerializedName("ClassDisplay")
@@ -32,7 +33,7 @@ data class HebeStudent(
 
     @SerializedName("Periods")
     val periods: List<Period>
-)
+) : StudentImpl()
 
 data class Login(
     @SerializedName("Value")

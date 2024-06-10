@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.google.gson.Gson
+import dev.medzik.android.components.rememberMutable
 import dev.medzik.android.utils.runOnIOThread
 import io.github.vulka.core.api.Platform
 import io.github.vulka.core.api.response.AccountInfo
@@ -28,6 +29,10 @@ fun StartScreen(args: Start) {
 
     val credentials = args.credentials
 
+    val luckyNumber by rememberMutable(0)
+
+
+
     val client = when (args.platform) {
         Platform.Vulcan -> {
             val loginData = Gson().fromJson(credentials, VulcanLoginCredentials::class.java)
@@ -41,6 +46,12 @@ fun StartScreen(args: Start) {
                 val loginResponse = LibrusLoginClient().login(loginData) as LibrusLoginCredentials
                 LibrusUserClient(loginResponse.cookies)
             }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        runOnIOThread {
+//            luckyNumber = client.getLuckyNumber()
         }
     }
 
@@ -61,7 +72,7 @@ fun StartScreen(args: Start) {
         }
 
         Platform.Vulcan -> {
-            Text(text = credentials)
+            Text(text = "Lucky number: $luckyNumber" )
         }
     }
 }

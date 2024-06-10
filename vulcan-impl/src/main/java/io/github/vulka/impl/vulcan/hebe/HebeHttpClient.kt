@@ -1,12 +1,16 @@
 package io.github.vulka.impl.vulcan.hebe
 
-import android.util.Log
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import io.github.vulka.core.api.log.Logger
+import io.github.vulka.core.api.log.LoggerFactory
 import io.github.vulka.impl.*
 import io.github.vulka.impl.vulcan.*
 import io.github.vulka.impl.vulcan.hebe.login.HebeKeystore
 import io.github.vulka.impl.vulcan.hebe.types.ApiRequest
+import io.github.vulka.impl.vulcan.hebe.types.ApiResponse
 import okhttp3.*
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
@@ -17,6 +21,8 @@ import java.util.*
 import java.util.regex.Pattern
 
 class HebeHttpClient(private val keystore: HebeKeystore) {
+    private val logger: Logger = LoggerFactory.get(HebeHttpClient::class.java)
+
     companion object {
         const val APP_NAME = "DzienniczekPlus 2.0"
         const val APP_VERSION = "1.4.2"
@@ -34,6 +40,7 @@ class HebeHttpClient(private val keystore: HebeKeystore) {
         }
         return URLEncoder.encode(matcher.group(), "UTF-8").lowercase()
     }
+
 
     @Throws(IOException::class)
     private fun buildHeaders(fullUrl: String, body: String? = null): Headers {
@@ -78,7 +85,7 @@ class HebeHttpClient(private val keystore: HebeKeystore) {
     }
 
     @Throws(IOException::class)
-    fun post(url: String, body: Any): Response {
+    fun <T> post(url: String, body: Any, clazz: Class<T>): T? {
         val payload = buildPayload(body)
         val payloadString = Gson().toJson(payload)
         val headers = buildHeaders(url, payloadString)
@@ -89,49 +96,107 @@ class HebeHttpClient(private val keystore: HebeKeystore) {
             .post(payloadString.toRequestBody("application/json".toMediaTypeOrNull()))
             .build()
 
+        logger.debug("HTTP: POST")
+        logger.debug("HTTP Request URL: $url")
+
         val response = client.newCall(request).execute()
 
-//        when (response.code) {
-//            200 -> {
-////                logger.debug("Throw InvalidTokenException")
-//                throw InvalidTokenException()
-//            }
-//            108 -> {
-////                logger.debug("Throw UnauthorizedCertificateException")
-//                throw UnauthorizedCertificateException()
-//            }
-//            203 -> {
-////                logger.debug("Throw InvalidPINException")
-//                throw InvalidPINException()
-//            }
-//            204 -> {
-////                logger.debug("Throw ExpiredTokenException")
-//                throw ExpiredTokenException()
-//            }
-//            -1 -> {
-////                logger.debug("Throw InvalidSymbolException")
-//                throw InvalidSymbolException()
-//            }
-//            0 -> {
-////                logger.debug("Throw VulcanAPIException")
-//                throw VulcanAPIException("")
-//            }
-//        }
+        logger.debug("HTTP Response code: ${response.code}")
 
-        return response
+        when (response.code) {
+            200 -> {
+                logger.debug("Throw InvalidTokenException")
+                throw InvalidTokenException()
+            }
+            108 -> {
+                logger.debug("Throw UnauthorizedCertificateException")
+                throw UnauthorizedCertificateException()
+            }
+            203 -> {
+                logger.debug("Throw InvalidPINException")
+                throw InvalidPINException()
+            }
+            204 -> {
+                logger.debug("Throw ExpiredTokenException")
+                throw ExpiredTokenException()
+            }
+            -1 -> {
+                logger.debug("Throw InvalidSymbolException")
+                throw InvalidSymbolException()
+            }
+            0 -> {
+                logger.debug("Throw VulcanAPIException")
+                throw VulcanAPIException("")
+            }
+        }
+
+        val responseBody = response.body?.string()
+
+        val type = TypeToken.getParameterized(ApiResponse::class.java, clazz).type
+        return Gson().fromJson<ApiResponse<T>>(responseBody, type).envelope
     }
 
     @Throws(IOException::class)
-    fun get(url: String): Response {
-        val headers = buildHeaders(url,null)
+    fun <T> get(url: String, clazz: Class<T>, query: Map<String, String>? = null): T? {
+
+
+        val urlBuilder = url.toHttpUrlOrNull()?.newBuilder()
+
+        if (query != null) {
+            for ((key, value) in query) {
+                urlBuilder!!.addQueryParameter(key, value)
+            }
+        }
+
+        val buildedUrl = urlBuilder!!.build()
+        val headers = buildHeaders(buildedUrl.toString())
 
         val request = Request.Builder()
-            .url(url)
+            .url(buildedUrl)
             .headers(headers)
             .get()
             .build()
 
+        logger.debug("HTTP: GET")
+        logger.debug("HTTP Request URL: $buildedUrl")
+
         val response = client.newCall(request).execute()
-        return response
+
+        logger.debug("HTTP Response code: ${response.code}")
+
+        val responseBody = response.body?.string()
+
+        logger.debug("HTTP Response body: $responseBody")
+
+        val type = TypeToken.getParameterized(ApiResponse::class.java, clazz).type
+        return Gson().fromJson<ApiResponse<T>>(responseBody, type).envelope
     }
+
+    @Throws(IOException::class)
+    fun getDebug(url: String,query: Map<String, String>? = null): Response {
+
+
+        val urlBuilder = url.toHttpUrlOrNull()?.newBuilder()
+
+        if (query != null) {
+            for ((key, value) in query) {
+                urlBuilder!!.addQueryParameter(key, value)
+            }
+        }
+
+        val buildedUrl = urlBuilder!!.build()
+        val headers = buildHeaders(buildedUrl.toString())
+
+        val request = Request.Builder()
+            .url(buildedUrl)
+            .headers(headers)
+            .get()
+            .build()
+
+        logger.debug("HTTP: GET (DEBUG)")
+        logger.debug("HTTP Request URL: $buildedUrl")
+
+        return client.newCall(request).execute()
+    }
+
 }

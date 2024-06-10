@@ -1,9 +1,9 @@
 package io.github.vulka.impl.vulcan
 
-open class VulcanHebeException(message: String) : Exception(message)
+open class VulcanAPIException(message: String) : Exception(message)
 
-class InvalidPINException : VulcanHebeException("Invalid PIN")
-class ExpiredTokenException : VulcanHebeException("Expired Token")
-class InvalidSymbolException : VulcanHebeException("Invalid Symbol")
-class InvalidTokenException : VulcanHebeException("Invalid Token")
-class UnauthorizedCertificateException : VulcanHebeException("Unauthorized Certificate")
+class InvalidPINException : VulcanAPIException("Invalid PIN")
+class ExpiredTokenException : VulcanAPIException("Expired Token")
+class InvalidSymbolException : VulcanAPIException("Invalid Symbol")
+class InvalidTokenException : VulcanAPIException("Invalid Token")
+class UnauthorizedCertificateException : VulcanAPIException("Unauthorized Certificate")

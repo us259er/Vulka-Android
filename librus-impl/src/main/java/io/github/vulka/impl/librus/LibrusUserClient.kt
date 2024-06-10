@@ -10,6 +10,7 @@ import io.ktor.client.plugins.cookies.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import org.jsoup.Jsoup
+import java.util.Date
 
 class LibrusUserClient(
     // TODO: Change to LibrusLoginCredentials
@@ -22,6 +23,10 @@ class LibrusUserClient(
     }
 
     override suspend fun getStudents(): Array<Student> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getLuckyNumber(student: Student, date: Date): Int {
         TODO("Not yet implemented")
     }
 

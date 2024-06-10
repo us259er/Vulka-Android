@@ -1,4 +1,4 @@
-package io.github.vulka.impl.vulcan.hebe
+package io.github.vulka.impl.vulcan.hebe.types
 
 import com.google.gson.annotations.SerializedName
 

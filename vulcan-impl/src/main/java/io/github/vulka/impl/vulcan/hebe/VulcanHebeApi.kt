@@ -1,16 +1,19 @@
 package io.github.vulka.impl.vulcan.hebe
 
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import io.github.vulka.core.api.log.LoggerFactory
 import io.github.vulka.impl.vulcan.Utils
 import io.github.vulka.impl.vulcan.VulcanLoginCredentials
 import io.github.vulka.impl.vulcan.hebe.login.HebeKeystore
 import io.github.vulka.impl.vulcan.hebe.login.PfxRequest
-import io.github.vulka.impl.vulcan.hebe.types.ApiResponse
+import io.github.vulka.impl.vulcan.hebe.types.HebeAccount
+import io.github.vulka.impl.vulcan.hebe.types.HebeLuckyNumber
 import io.github.vulka.impl.vulcan.hebe.types.HebeStudent
 import okhttp3.*
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 class VulcanHebeApi {
     private val log = LoggerFactory.get(VulcanHebeApi::class.java)
@@ -22,6 +25,7 @@ class VulcanHebeApi {
         client = HebeHttpClient(credentials.keystore)
         this.credentials = credentials
     }
+
 
     @Throws(IOException::class)
     fun getBaseUrl(token: String): String? {
@@ -46,22 +50,25 @@ class VulcanHebeApi {
         return null
     }
 
+    private fun getRestUrl(student: HebeStudent): String {
+        return credentials.account.restUrl + student.unit.code
+    }
+
     @Throws(Exception::class)
-    fun register(keystore: HebeKeystore, symbol: String, token: String, pin: String): ApiResponse<HebeAccount> {
+    fun register(keystore: HebeKeystore, symbol: String, token: String, pin: String): HebeAccount {
         val upperToken = token.uppercase()
         val lowerSymbol = symbol.lowercase()
 
         client = HebeHttpClient(keystore)
 
-        // https://lekcjaplus.vulcan.net.pl
-        val baseUrl = getBaseUrl(token);
+        val baseUrl = getBaseUrl(token)
 
         val fullUrl = "$baseUrl/$lowerSymbol/${ApiEndpoints.DEVICE_REGISTER}"
 
         val (certificate,fingerprint,_) = keystore.getData()
 
         val pfxRequest = PfxRequest(
-            os = "Android",
+            OS = "Android",
             deviceModel = keystore.deviceModel,
             certificate = certificate,
             certificateType = "X509",
@@ -74,18 +81,10 @@ class VulcanHebeApi {
         log.info("URL: $fullUrl")
         log.info("Registering to $lowerSymbol")
 
+        val response = client.post(fullUrl, pfxRequest,HebeAccount::class.java)
 
-        client.post(fullUrl, pfxRequest).use { response ->
-            log.info("Response code ${response.code}")
-            val body = response.body?.string()
-            log.info("Response body $body")
-
-            val apiResponse = Gson().fromJson<ApiResponse<HebeAccount>>(body, object : TypeToken<ApiResponse<HebeAccount>>() {}.type)
-            if (apiResponse.envelope != null)
-                credentials = VulcanLoginCredentials(apiResponse.envelope!!,keystore)
-
-            return apiResponse
-        }
+        credentials = VulcanLoginCredentials(response!!,keystore)
+        return response
     }
 
     fun getStudents(): Array<HebeStudent> {
@@ -95,12 +94,23 @@ class VulcanHebeApi {
 
         log.info("Students URL: $fullUrl")
 
-        client.get(fullUrl).use {
-            val body = it.body?.string()
-            log.debug(body!!)
-            val apiResponse = Gson().fromJson<ApiResponse<Array<HebeStudent>>>(body, object : TypeToken<ApiResponse<Array<HebeStudent>>>() {}.type)
-            log.info("Code: ${it.code}")
-            return apiResponse.envelope!!
-        }
+        return client.get(fullUrl, Array<HebeStudent>::class.java)!!
+    }
+
+    fun getLuckyNumber(student: HebeStudent,date: Date): Int {
+        val baseUrl = getRestUrl(student)
+        val response = client.get(
+            url = "$baseUrl/${ApiEndpoints.DATA_ROOT}/${ApiEndpoints.DATA_LUCKY_NUMBER}",
+            query = mapOf(
+                "constituentId" to student.school.id.toString(),
+                "day" to SimpleDateFormat("yyyy-MM-dd").format(date)
+            ),
+            clazz = HebeLuckyNumber::class.java
+        )
+        return response!!.number
+    }
+
+    fun getGrades() {
+
     }
 }
