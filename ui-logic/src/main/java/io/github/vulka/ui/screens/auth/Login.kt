@@ -78,6 +78,20 @@ fun LoginScreen(
         item {
             when (args.platform) {
                 Platform.Vulcan -> {
+
+                    Surface(
+                        modifier = Modifier.padding(bottom = 12.dp),
+                        shape = MaterialTheme.shapes.medium,
+                        color = MaterialTheme.colorScheme.tertiary.combineAlpha(0.9f)
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(12.dp),
+                            text = "Aby zalogować się do aplikacji, zaloguj się na stronę e-dziennika na komputerze, przejdź do zakładki \"Dostęp mobilny\", następnie kliknij \"Wygeneruj kod dostępu\" i przepisz podane dane poniżej.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onTertiary.combineAlpha(0.9f)
+                        )
+                    }
+
                     AnimatedTextField(
                         modifier = Modifier.padding(vertical = 5.dp),
                         label = stringResource(R.string.Field_Symbol),
