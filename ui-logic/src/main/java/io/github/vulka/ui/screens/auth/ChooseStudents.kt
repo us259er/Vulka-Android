@@ -59,7 +59,7 @@ fun ChooseStudentsScreen(
 
     val client = when (args.platform) {
         Platform.Vulcan -> VulcanUserClient(credentials as VulcanLoginCredentials)
-        Platform.Librus -> LibrusUserClient((credentials as LibrusLoginCredentials).cookies)
+        Platform.Librus -> LibrusUserClient(credentials as LibrusLoginCredentials)
     }
 
     val students = remember { mutableStateListOf<Student>()}

@@ -13,12 +13,11 @@ import org.jsoup.Jsoup
 import java.util.Date
 
 class LibrusUserClient(
-    // TODO: Change to LibrusLoginCredentials
-    private val cookies: List<Cookie>
+    private val credentials: LibrusLoginCredentials
 ) : UserClient {
     private val client = HttpClient(OkHttp) {
         install(HttpCookies) {
-            storage = ConstantCookiesStorage(*cookies.toTypedArray())
+            storage = ConstantCookiesStorage(*credentials.cookies.toTypedArray())
         }
     }
 
@@ -32,7 +31,7 @@ class LibrusUserClient(
 
     override suspend fun getAccountInfo(): AccountInfo {
         val response = client.get("https://synergia.librus.pl/informacja") {
-            cookies.forEach {
+            credentials.cookies.forEach {
                 applyCookie(it)
             }
         }

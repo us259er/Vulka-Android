@@ -31,8 +31,6 @@ fun StartScreen(args: Start) {
 
     val luckyNumber by rememberMutable(0)
 
-
-
     val client = when (args.platform) {
         Platform.Vulcan -> {
             val loginData = Gson().fromJson(credentials, VulcanLoginCredentials::class.java)
@@ -44,7 +42,7 @@ fun StartScreen(args: Start) {
             // TODO: do not block main-thread
             runBlocking {
                 val loginResponse = LibrusLoginClient().login(loginData) as LibrusLoginCredentials
-                LibrusUserClient(loginResponse.cookies)
+                LibrusUserClient(loginResponse)
             }
         }
     }
