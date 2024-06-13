@@ -104,10 +104,11 @@ class HebeHttpClient(private val keystore: HebeKeystore) {
         logger.debug("HTTP Response code: ${response.code}")
 
         when (response.code) {
-            200 -> {
-                logger.debug("Throw InvalidTokenException")
-                throw InvalidTokenException()
-            }
+            // TODO: Fix problems with login
+//            200 -> {
+//                logger.debug("Throw InvalidTokenException")
+//                throw InvalidTokenException()
+//            }
             108 -> {
                 logger.debug("Throw UnauthorizedCertificateException")
                 throw UnauthorizedCertificateException()

@@ -3,6 +3,7 @@ package io.github.vulka.impl.librus
 import io.github.vulka.core.api.UserClient
 import io.github.vulka.core.api.response.AccountInfo
 import io.github.vulka.core.api.types.Student
+import io.github.vulka.core.api.types.StudentImpl
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.okhttp.*
@@ -13,20 +14,51 @@ import org.jsoup.Jsoup
 import java.util.Date
 
 class LibrusUserClient(
-    private val credentials: LibrusLoginCredentials
+    private var credentials: LibrusLoginCredentials
 ) : UserClient {
-    private val client = HttpClient(OkHttp) {
-        install(HttpCookies) {
-            storage = ConstantCookiesStorage(*credentials.cookies.toTypedArray())
+    private lateinit var client: HttpClient
+
+    suspend fun renewCredentials() {
+        val loginData = credentials.request
+        credentials = LibrusLoginClient().login(loginData) as LibrusLoginCredentials
+
+        client = HttpClient(OkHttp) {
+            install(HttpCookies) {
+                storage = ConstantCookiesStorage(*credentials.cookies.toTypedArray())
+            }
         }
     }
 
     override suspend fun getStudents(): Array<Student> {
-        TODO("Not yet implemented")
+        val students = ArrayList<Student>()
+
+        val response = client.get("https://synergia.librus.pl/informacja") {
+            credentials.cookies.forEach {
+                applyCookie(it)
+            }
+        }
+
+        val html: String = response.body()
+
+        val doc = Jsoup.parse(html)
+
+        val fullName = doc.select("#body > div > div > table > tbody > tr:nth-child(1) > td")
+        val className = doc.select("#body > div > div > table > tbody > tr:nth-child(2) > td")
+
+        students.add(Student(
+            fullName = fullName.text(),
+            isParent = false,
+            parent = null,
+            classId = className.text(),
+            impl = StudentImpl()
+        ))
+
+        return students.toTypedArray()
     }
 
     override suspend fun getLuckyNumber(student: Student, date: Date): Int {
-        TODO("Not yet implemented")
+        // TODO: Implement
+        return 0
     }
 
     override suspend fun getAccountInfo(): AccountInfo {

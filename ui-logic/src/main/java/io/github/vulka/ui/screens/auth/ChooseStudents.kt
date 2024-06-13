@@ -1,5 +1,6 @@
 package io.github.vulka.ui.screens.auth
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -57,16 +58,25 @@ fun ChooseStudentsScreen(
         Platform.Librus -> Gson().fromJson(args.credentialsData, LibrusLoginCredentials::class.java)
     }
 
+    if (credentials is LibrusLoginCredentials) {
+        Log.d("Test",credentials.request.login)
+    }
+
     val client = when (args.platform) {
         Platform.Vulcan -> VulcanUserClient(credentials as VulcanLoginCredentials)
         Platform.Librus -> LibrusUserClient(credentials as LibrusLoginCredentials)
     }
+
 
     val students = remember { mutableStateListOf<Student>()}
     val selectedStudents = remember { mutableStateListOf<Student>() }
 
     LaunchedEffect(Unit) {
         runOnIOThread {
+
+            if (args.platform == Platform.Librus)
+                (client as LibrusUserClient).renewCredentials()
+
             client.getStudents().forEach {
                 students.add(it)
                 selectedStudents.add(it)

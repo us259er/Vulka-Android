@@ -13,13 +13,7 @@ object CredentialsKeyStore : KeyStoreAlias {
 }
 
 fun serializeCredentialsAndEncrypt(response: LoginCredentials): String {
-    val json = Gson().toJson(
-        when (response) {
-            is VulcanLoginCredentials -> response
-            is LibrusLoginCredentials -> response.request
-            else -> throw IllegalStateException()
-        }
-    )
+    val json = Gson().toJson(response)
 
     val cipherEnc = KeyStore.initForEncryption(CredentialsKeyStore, false)
     val cipherData = KeyStore.encrypt(cipherEnc, json.toByteArray())
@@ -29,13 +23,7 @@ fun serializeCredentialsAndEncrypt(response: LoginCredentials): String {
 
 // TODO: maybe move somewhere else
 fun serializeCredentials(response: LoginCredentials): String {
-    return Gson().toJson(
-        when (response) {
-            is VulcanLoginCredentials -> response
-            is LibrusLoginCredentials -> response.request
-            else -> throw IllegalStateException()
-        }
-    )
+    return Gson().toJson(response)
 }
 
 fun decryptCredentials(cipherData: String): String {
