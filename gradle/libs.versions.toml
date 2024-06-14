@@ -21,7 +21,8 @@ jsoup = "1.17.2"
 junit = "4.13.2"
 kotlin = "2.0.0"
 kotlin-ksp = "2.0.0-1.0.22"
-kotlin-serialization = "1.7.0"
+kotlinx-coroutines = "1.8.1"
+kotlinx-serialization = "1.7.0"
 ktor = "2.3.11"
 medzik-android-utils = "1.5.2"
 medzik-libcrypto = "1.2.0"
@@ -53,7 +54,8 @@ gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt" }
 jsoup = { group = "org.jsoup", name = "jsoup", version.ref = "jsoup" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlin-serialization" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 medzik-android-components = { module = "dev.medzik.android:components", version.ref = "medzik-android-utils" }

@@ -24,15 +24,18 @@ class LibrusUserClient(
 ) : UserClient {
     private lateinit var client: HttpClient
 
+    internal fun initClient(cookies: List<Cookie>) {
+        client = HttpClient(OkHttp) {
+            install(HttpCookies) {
+                storage = ConstantCookiesStorage(*cookies.toTypedArray())
+            }
+        }
+    }
+
     suspend fun renewCredentials() {
         val loginData = credentials.request
         credentials = LibrusLoginClient().login(loginData) as LibrusLoginCredentials
-
-        client = HttpClient(OkHttp) {
-            install(HttpCookies) {
-                storage = ConstantCookiesStorage(*credentials.cookies.toTypedArray())
-            }
-        }
+        initClient(credentials.cookies)
     }
 
     override suspend fun getStudents(): Array<Student> {

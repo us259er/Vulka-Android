@@ -27,4 +27,7 @@ dependencies {
     implementation(libs.jsoup)
     implementation(projects.coreApi)
     implementation(projects.databaseLogic)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
 }
