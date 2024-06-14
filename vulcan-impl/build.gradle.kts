@@ -24,10 +24,9 @@ android {
 }
 
 dependencies {
+    implementation(libs.gson)
     implementation(libs.ktor.core)
     implementation(libs.ktor.okhttp)
+    implementation(libs.migbase64)
     implementation(projects.coreApi)
-    implementation(libs.gson)
-
-    implementation("com.brsanthu:migbase64:2.2")
 }
