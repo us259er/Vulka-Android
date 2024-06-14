@@ -8,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.gson.Gson
 import dev.medzik.android.components.rememberMutable
 import dev.medzik.android.components.rememberMutableBoolean
@@ -20,17 +21,27 @@ import io.github.vulka.impl.librus.LibrusLoginCredentials
 import io.github.vulka.impl.librus.LibrusUserClient
 import io.github.vulka.impl.vulcan.VulcanLoginCredentials
 import io.github.vulka.impl.vulcan.VulcanUserClient
+import io.github.vulka.ui.VulkaViewModel
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
+import java.util.Date
+import java.util.UUID
 
 @Serializable
-class Start(val platform: Platform, val credentials: String)
+class Start(
+    val platform: Platform,
+    val userId: String,
+    val credentials: String
+)
 
 @Composable
-fun StartScreen(args: Start) {
+fun StartScreen(
+    args: Start,
+    viewModel: VulkaViewModel = hiltViewModel()
+) {
     val credentials = args.credentials
 
-    val luckyNumber by rememberMutable(0)
+    var luckyNumber by rememberMutable(0)
 
     val client by rememberMutable(when (args.platform) {
         Platform.Vulcan -> {
@@ -53,8 +64,10 @@ fun StartScreen(args: Start) {
             if (args.platform == Platform.Librus)
                 (client as LibrusUserClient).renewCredentials()
 
+            val student = viewModel.credentialRepository.getById(UUID.fromString(args.userId))!!.student
+
             loaded = true
-//            luckyNumber = client.getLuckyNumber()
+            luckyNumber = client.getLuckyNumber(student,Date())
         }
     }
 

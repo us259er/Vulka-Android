@@ -82,6 +82,7 @@ fun HomeScreen(
                         bottomSelected = "start"
                         bottomNavController.navigate(Start(
                             platform = args.platform,
+                            userId = args.userId,
                             credentials
                         ))
                     }
@@ -119,6 +120,7 @@ fun HomeScreen(
             bottomNavController,
             startDestination = Start(
                 platform = args.platform,
+                userId = args.userId,
                 credentials
             ),
             modifier = Modifier.padding(innerPadding)
