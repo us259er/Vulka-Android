@@ -2,15 +2,21 @@ package io.github.vulka.impl.librus
 
 import io.github.vulka.core.api.UserClient
 import io.github.vulka.core.api.response.AccountInfo
+import io.github.vulka.core.api.types.Parent
 import io.github.vulka.core.api.types.Student
 import io.github.vulka.core.api.types.StudentImpl
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.engine.okhttp.*
-import io.ktor.client.plugins.cookies.*
-import io.ktor.client.request.*
-import io.ktor.http.*
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.cookies.ConstantCookiesStorage
+import io.ktor.client.plugins.cookies.HttpCookies
+import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.get
+import io.ktor.http.Cookie
+import io.ktor.http.HttpHeaders
+import io.ktor.http.renderCookieHeader
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import java.util.Date
 
 class LibrusUserClient(
@@ -30,30 +36,31 @@ class LibrusUserClient(
     }
 
     override suspend fun getStudents(): Array<Student> {
-        val students = ArrayList<Student>()
+        val document = parse("/informacja")
 
-        val response = client.get("https://synergia.librus.pl/informacja") {
-            credentials.cookies.forEach {
-                applyCookie(it)
-            }
+        val fullName = document.select("#body > div > div > table > tbody > tr:nth-child(1) > td")
+        val className = document.select("#body > div > div > table > tbody > tr:nth-child(2) > td")
+
+        var parent: Parent? = null
+        try {
+            val parentName = document.select("#body > div > div > table > tbody > tr:nth-child(10) > td")
+
+            parent = Parent(
+                name = parentName.text()
+            )
+        } catch (_: Exception) {
+            // ignore
         }
 
-        val html: String = response.body()
-
-        val doc = Jsoup.parse(html)
-
-        val fullName = doc.select("#body > div > div > table > tbody > tr:nth-child(1) > td")
-        val className = doc.select("#body > div > div > table > tbody > tr:nth-child(2) > td")
-
-        students.add(Student(
-            fullName = fullName.text(),
-            isParent = false,
-            parent = null,
-            classId = className.text(),
-            impl = StudentImpl()
-        ))
-
-        return students.toTypedArray()
+        return arrayOf(
+            Student(
+                fullName = fullName.text(),
+                isParent = parent != null,
+                parent = parent,
+                classId = className.text(),
+                impl = StudentImpl()
+            )
+        )
     }
 
     override suspend fun getLuckyNumber(student: Student, date: Date): Int {
@@ -62,20 +69,12 @@ class LibrusUserClient(
     }
 
     override suspend fun getAccountInfo(): AccountInfo {
-        val response = client.get("https://synergia.librus.pl/informacja") {
-            credentials.cookies.forEach {
-                applyCookie(it)
-            }
-        }
+        val document = parse("/informacja")
 
-        val html: String = response.body()
-
-        val doc = Jsoup.parse(html)
-
-        val fullName = doc.select("#body > div > div > table > tbody > tr:nth-child(1) > td")
-        val className = doc.select("#body > div > div > table > tbody > tr:nth-child(2) > td")
-        val index = doc.select("#body > div > div > table > tbody > tr:nth-child(3) > td")
-        val educator = doc.select("#body > div > div > table > tbody > tr:nth-child(4) > td")
+        val fullName = document.select("#body > div > div > table > tbody > tr:nth-child(1) > td")
+        val className = document.select("#body > div > div > table > tbody > tr:nth-child(2) > td")
+        val index = document.select("#body > div > div > table > tbody > tr:nth-child(3) > td")
+        val educator = document.select("#body > div > div > table > tbody > tr:nth-child(4) > td")
 
         return AccountInfo(
             fullName = fullName.text(),
@@ -83,6 +82,18 @@ class LibrusUserClient(
             index = index.text().toInt(),
             educator = educator.text()
         )
+    }
+
+    private suspend fun parse(endpoint: String): Document {
+        val response = client.get("https://synergia.librus.pl$endpoint") {
+            credentials.cookies.forEach {
+                applyCookie(it)
+            }
+        }
+
+        val html: String = response.body()
+
+        return Jsoup.parse(html)
     }
 }
 
