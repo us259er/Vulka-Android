@@ -64,8 +64,10 @@ class LibrusUserClient(
     }
 
     override suspend fun getLuckyNumber(student: Student, date: Date): Int {
-        // TODO: Implement
-        return 0
+        val document = parse("${getBaseEndpoint(student)}/index")
+
+        val number = document.select(".luckyNumber")
+        return number.text().toInt()
     }
 
     override suspend fun getAccountInfo(): AccountInfo {
@@ -94,6 +96,10 @@ class LibrusUserClient(
         val html: String = response.body()
 
         return Jsoup.parse(html)
+    }
+
+    private fun getBaseEndpoint(student: Student): String {
+        return if (student.isParent) "/rodzic" else "/uczen"
     }
 }
 
