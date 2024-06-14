@@ -3,12 +3,13 @@ package io.github.vulka.impl.librus
 import io.github.vulka.core.api.LoginClient
 import io.github.vulka.core.api.LoginCredentials
 import io.github.vulka.core.api.LoginData
-import io.ktor.client.*
-import io.ktor.client.engine.okhttp.*
-import io.ktor.client.plugins.cookies.*
-import io.ktor.client.request.*
-import io.ktor.client.request.forms.*
-import io.ktor.http.*
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.cookies.HttpCookies
+import io.ktor.client.plugins.cookies.cookies
+import io.ktor.client.request.forms.submitForm
+import io.ktor.client.request.get
+import io.ktor.http.parameters
 
 class LibrusLoginClient : LoginClient {
     private val client = HttpClient(OkHttp) {
@@ -33,9 +34,16 @@ class LibrusLoginClient : LoginClient {
 
         val cookies = client.cookies("https://synergia.librus.pl")
 
-        return LibrusLoginCredentials(
+        val credentials = LibrusLoginCredentials(
             cookies = cookies,
             request = loginData
         )
+
+        // check if user is logged in
+        val userClient = LibrusUserClient(credentials)
+        userClient.initClient(cookies)
+        userClient.getAccountInfo()
+
+        return credentials
     }
 }
