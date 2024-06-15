@@ -47,10 +47,10 @@ class LibrusUserClient(
         // check if the account is a parent
         var parent: Parent? = null
         try {
-            // "My account" ("Moje konto") section is only on the parent page, if it exists it is a parent
-            val myAccountSection = document.select("#body > div > div > table > tbody > tr:nth-child(10) > td")
+            // "Student account" section in only on parent site
+            val studentAccountSection = document.select("#body > div > div > table > tbody > tr:nth-child(10) > td")
 
-            if (myAccountSection.isNotEmpty()) {
+            if (studentAccountSection.text() == "Konto Ucznia") {
                 val parentName = document.select("#body > div > div > table > tbody > tr:nth-child(7) > td")
 
                 parent = Parent(
