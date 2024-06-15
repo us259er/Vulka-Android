@@ -44,13 +44,19 @@ class LibrusUserClient(
         val fullName = document.select("#body > div > div > table > tbody > tr:nth-child(1) > td")
         val className = document.select("#body > div > div > table > tbody > tr:nth-child(2) > td")
 
+        // check if the account is a parent
         var parent: Parent? = null
         try {
-            val parentName = document.select("#body > div > div > table > tbody > tr:nth-child(7) > td")
+            // "My account" ("Moje konto") section is only on the parent page, if it exists it is a parent
+            val myAccountSection = document.select("#body > div > div > table > tbody > tr:nth-child(10) > td")
 
-            parent = Parent(
-                name = parentName.text()
-            )
+            if (myAccountSection.isNotEmpty()) {
+                val parentName = document.select("#body > div > div > table > tbody > tr:nth-child(7) > td")
+
+                parent = Parent(
+                    name = parentName.text()
+                )
+            }
         } catch (_: Exception) {
             // ignore
         }
