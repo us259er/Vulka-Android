@@ -108,17 +108,17 @@ fun ChooseStudentsScreen(
                     runOnIOThread {
                         loading = true
 
-                        // TODO: change to for loop
-                        val student = selectedStudents[0]
+                        for (student in selectedStudents) {
+                            val encryptedCredentials = Credentials(
+                                platform = args.platform,
+                                student = student,
+                                data = serializeCredentialsAndEncrypt(credentials)
+                            )
 
-                        val encryptedCredentials = Credentials(
-                            platform = args.platform,
-                            student = student,
-                            data = serializeCredentialsAndEncrypt(credentials)
-                        )
+                            viewModel.credentialRepository.insert(encryptedCredentials)
+                        }
 
-                        // TODO: add credentials for every students in Vulcan (Librus always had one student)
-                        viewModel.credentialRepository.insert(encryptedCredentials)
+                        val encryptedCredentials = viewModel.credentialRepository.get()!!
 
                         runOnUiThread {
                             navController.navigate(

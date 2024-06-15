@@ -15,4 +15,7 @@ interface CredentialsDao {
 
     @Query("SELECT * FROM credentials WHERE id=:id LIMIT 1")
     fun getById(id: UUID): Credentials?
+
+    @Query("SELECT * FROM credentials")
+    fun getAll(): List<Credentials>
 }

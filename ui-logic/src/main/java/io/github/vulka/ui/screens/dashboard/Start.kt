@@ -38,10 +38,13 @@ import io.github.vulka.core.api.Platform
 import io.github.vulka.core.api.types.Student
 import io.github.vulka.impl.librus.LibrusLoginCredentials
 import io.github.vulka.impl.librus.LibrusUserClient
+import io.github.vulka.impl.vulcan.Utils
 import io.github.vulka.impl.vulcan.VulcanLoginCredentials
 import io.github.vulka.impl.vulcan.VulcanUserClient
 import io.github.vulka.ui.R
 import io.github.vulka.ui.VulkaViewModel
+import io.github.vulka.ui.common.Avatar
+import io.github.vulka.ui.utils.getInitials
 import kotlinx.serialization.Serializable
 import java.util.Date
 import java.util.UUID
@@ -114,12 +117,6 @@ fun StartScreen(
     }
 }
 
-fun getInitials(name: String): String {
-    return name.split(" ")
-        .mapNotNull { it.firstOrNull()?.uppercaseChar() }
-        .joinToString("")
-}
-
 
 @Composable
 fun HeaderCard(student: Student) {
@@ -134,20 +131,7 @@ fun HeaderCard(student: Student) {
                 .heightIn(min = 64.dp)
                 .padding(10.dp),
         ) {
-            Card(
-                modifier = Modifier.size(45.dp),
-            ){
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        textAlign = TextAlign.Center,
-                        text = getInitials(student.fullName)
-                    )
-                }
-            }
+            Avatar(text = student.getInitials())
             Column(
                 modifier = Modifier.padding(horizontal = 10.dp)
             ) {

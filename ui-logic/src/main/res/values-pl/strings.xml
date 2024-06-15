@@ -11,4 +11,6 @@
     <string name="Parent">Rodzic</string>
     <string name="Student">Uczeń</string>
     <string name="None">Brak</string>
+    <string name="SelectAccount">Wybierz Konto</string>
+    <string name="AccountManager">Menadżer Kont</string>
 </resources>
