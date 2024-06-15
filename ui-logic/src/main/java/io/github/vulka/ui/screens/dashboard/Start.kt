@@ -9,9 +9,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -23,7 +24,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -32,6 +32,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.gson.Gson
 import dev.medzik.android.components.rememberMutable
 import dev.medzik.android.components.rememberMutableBoolean
+import dev.medzik.android.components.ui.IconBox
 import dev.medzik.android.utils.runOnIOThread
 import io.github.vulka.core.api.Platform
 import io.github.vulka.core.api.types.Student
@@ -173,14 +174,11 @@ fun LuckyCard(luckyNumber: Int) {
                 .padding(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                painterResource(R.drawable.ic_lucky_number),
-                contentDescription = null,
-                modifier = Modifier.size(35.dp)
-            )
+            IconBox(Icons.Default.Star)
+
             Text(
-                modifier = Modifier.padding(horizontal = 10.dp),
-                fontSize = 20.sp,
+                modifier = Modifier.padding(horizontal = 8.dp),
+                fontSize = 18.sp,
                 text = "${if (luckyNumber != 0) luckyNumber else stringResource(R.string.None)}"
             )
         }
