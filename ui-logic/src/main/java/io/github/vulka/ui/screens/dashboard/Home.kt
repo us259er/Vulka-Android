@@ -1,5 +1,7 @@
 package io.github.vulka.ui.screens.dashboard
 
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Backpack
@@ -123,7 +125,7 @@ fun HomeScreen(
                 userId = args.userId,
                 credentials
             ),
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.fillMaxSize().padding(innerPadding)
         ) {
             composable<Start>(
                 typeMap = mapOf(typeOf<Platform>() to PlatformType)

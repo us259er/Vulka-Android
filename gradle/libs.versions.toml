@@ -16,6 +16,7 @@ compose-navigation = "2.8.0-beta03"
 dagger = "2.51.1"
 google-material = "1.12.0"
 gson = "2.11.0"
+gson-extras = "1.3.0"
 hilt = "1.2.0"
 jsoup = "1.17.2"
 junit = "4.13.2"
@@ -51,6 +52,7 @@ dagger-hilt = { module = "com.google.dagger:hilt-android", version.ref = "dagger
 dagger-hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "dagger" }
 google-material = { module = "com.google.android.material:material", version.ref = "google-material" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+gson-extras = { module = "org.danilopianini:gson-extras", version.ref = "gson-extras" }
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt" }
 jsoup = { group = "org.jsoup", name = "jsoup", version.ref = "jsoup" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

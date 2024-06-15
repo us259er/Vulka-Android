@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -67,6 +68,8 @@ fun ChooseStudentsScreen(
         Platform.Librus -> LibrusUserClient(credentials as LibrusLoginCredentials)
     }
 
+    var loaded by rememberMutableBoolean()
+
 
     val students = remember { mutableStateListOf<Student>()}
     val selectedStudents = remember { mutableStateListOf<Student>() }
@@ -81,66 +84,78 @@ fun ChooseStudentsScreen(
                 students.add(it)
                 selectedStudents.add(it)
             }
+
+            loaded = true
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.SpaceBetween
-    ) {
+    if (loaded) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            students.forEach { student ->
-                StudentBox(student,selectedStudents)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                students.forEach { student ->
+                    StudentBox(student,selectedStudents)
+                }
+            }
+
+            var loading by rememberMutableBoolean()
+
+            LoadingButton(
+                onClick = {
+                    runOnIOThread {
+                        loading = true
+
+                        // TODO: change to for loop
+                        val student = selectedStudents[0]
+
+                        val encryptedCredentials = Credentials(
+                            platform = args.platform,
+                            student = student,
+                            data = serializeCredentialsAndEncrypt(credentials)
+                        )
+
+                        // TODO: add credentials for every students in Vulcan (Librus always had one student)
+                        viewModel.credentialRepository.insert(encryptedCredentials)
+
+                        runOnUiThread {
+                            navController.navigate(
+                                Home(
+                                    userId = encryptedCredentials.id.toString(),
+                                    credentials = encryptedCredentials.data,
+                                    platform = args.platform
+                                )
+                            ) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = false
+                                    inclusive = true
+                                }
+                            }
+
+                            loading = false
+                        }
+                    }
+                },
+                loading = loading,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text(stringResource(R.string.Done))
             }
         }
-
-        var loading by rememberMutableBoolean()
-
-        LoadingButton(
-            onClick = {
-                runOnIOThread {
-                    loading = true
-
-                    // TODO: change to for loop
-                    val student = selectedStudents[0]
-
-                    val encryptedCredentials = Credentials(
-                        platform = args.platform,
-                        student = student,
-                        data = serializeCredentialsAndEncrypt(credentials)
-                    )
-
-                    // TODO: add credentials for every students in Vulcan (Librus always had one student)
-                    viewModel.credentialRepository.insert(encryptedCredentials)
-
-                    runOnUiThread {
-                        navController.navigate(
-                            Home(
-                                userId = encryptedCredentials.id.toString(),
-                                credentials = encryptedCredentials.data,
-                                platform = args.platform
-                            )
-                        ) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = false
-                                inclusive = true
-                            }
-                        }
-
-                        loading = false
-                    }
-                }
-            },
-            loading = loading,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+    } else {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Text(stringResource(R.string.Done))
+            CircularProgressIndicator()
         }
     }
 }

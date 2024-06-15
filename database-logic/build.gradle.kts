@@ -26,6 +26,8 @@ android {
 dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.runtime)
+
+    implementation(project(":vulcan-impl"))
     ksp(libs.androidx.room.compiler)
 
     implementation(projects.coreApi)
@@ -35,4 +37,5 @@ dependencies {
 
     // credential type converter
     implementation(libs.gson)
+    implementation(libs.gson.extras)
 }

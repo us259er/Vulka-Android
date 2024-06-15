@@ -16,4 +16,5 @@
     <string name="Timetable">Timetable</string>
     <string name="Parent">Parent</string>
     <string name="Student">Student</string>
+    <string name="None">None</string>
 </resources>
