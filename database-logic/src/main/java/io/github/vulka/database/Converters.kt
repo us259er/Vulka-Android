@@ -57,7 +57,7 @@ class StudentTypeAdapter : JsonSerializer<Student>, JsonDeserializer<Student> {
         val fullName = jsonObject.get("fullName").asString
         val isParent = jsonObject.get("isParent").asBoolean
         val parent = context.deserialize<Parent>(jsonObject.get("parent"), Parent::class.java)
-        val classId = jsonObject.get("classId").asString
+        val classId = if (jsonObject.get("classId") != null )jsonObject.get("classId").asString else null
 
         val implObject = jsonObject.get("impl")
         val impl = if (implObject.asJsonObject.has("ClassDisplay")) {

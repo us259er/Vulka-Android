@@ -108,6 +108,8 @@ fun ChooseStudentsScreen(
                     runOnIOThread {
                         loading = true
 
+                        var firstCredentials: Credentials? = null
+
                         for (student in selectedStudents) {
                             val encryptedCredentials = Credentials(
                                 platform = args.platform,
@@ -115,16 +117,17 @@ fun ChooseStudentsScreen(
                                 data = serializeCredentialsAndEncrypt(credentials)
                             )
 
+                            if (firstCredentials == null)
+                                firstCredentials = encryptedCredentials
+
                             viewModel.credentialRepository.insert(encryptedCredentials)
                         }
-
-                        val encryptedCredentials = viewModel.credentialRepository.get()!!
 
                         runOnUiThread {
                             navController.navigate(
                                 Home(
-                                    userId = encryptedCredentials.id.toString(),
-                                    credentials = encryptedCredentials.data,
+                                    userId = firstCredentials!!.id.toString(),
+                                    credentials = firstCredentials.data,
                                     platform = args.platform
                                 )
                             ) {

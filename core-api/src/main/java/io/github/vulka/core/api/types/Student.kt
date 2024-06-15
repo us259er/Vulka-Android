@@ -12,7 +12,7 @@ data class Student(
     val fullName: String,
     val isParent: Boolean,
     val parent: Parent?,
-    val classId: String,
+    val classId: String?,
 
     // Platform specific data (should be cast), don't use directly
     val impl: StudentImpl

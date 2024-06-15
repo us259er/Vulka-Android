@@ -1,5 +1,6 @@
 package io.github.vulka.ui
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -8,10 +9,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import dev.medzik.android.components.icons.TopAppBarBackIcon
 import io.github.vulka.core.api.Platform
 import io.github.vulka.ui.common.DefaultScaffold
 import io.github.vulka.ui.common.MediumTopAppBarWithBack
@@ -23,6 +26,8 @@ import io.github.vulka.ui.screens.auth.Login
 import io.github.vulka.ui.screens.auth.LoginScreen
 import io.github.vulka.ui.screens.dashboard.Home
 import io.github.vulka.ui.screens.dashboard.HomeScreen
+import io.github.vulka.ui.screens.dashboard.more.AccountManager
+import io.github.vulka.ui.screens.dashboard.more.AccountManagerScreen
 import io.github.vulka.ui.utils.navtype.PlatformType
 import kotlin.reflect.typeOf
 
@@ -116,5 +121,32 @@ fun VulkaNavigation(viewModel: VulkaViewModel = hiltViewModel()) {
 
             HomeScreen(args, navController)
         }
+
+        composable<AccountManager>(
+            typeMap = mapOf(typeOf<Platform>() to PlatformType)
+        ) {
+            DefaultScaffold(
+                topBar = {
+                    TopBarWithBack(
+                        title = R.string.AccountManager,
+                        navController
+                    )
+                }
+            ) {
+                val args = it.toRoute<AccountManager>()
+
+                AccountManagerScreen(args, navController)
+            }
+
+        }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TopBarWithBack(@StringRes title: Int, navController: NavController) {
+    TopAppBar(
+        title = { Text(text = stringResource(title)) },
+        navigationIcon = { TopAppBarBackIcon(navController) }
+    )
 }

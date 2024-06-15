@@ -46,7 +46,7 @@ class LibrusUserClient(
 
         var parent: Parent? = null
         try {
-            val parentName = document.select("#body > div > div > table > tbody > tr:nth-child(10) > td")
+            val parentName = document.select("#body > div > div > table > tbody > tr:nth-child(7) > td")
 
             parent = Parent(
                 name = parentName.text()

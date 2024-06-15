@@ -19,4 +19,7 @@
     <string name="None">None</string>
     <string name="SelectAccount">Select Account</string>
     <string name="AccountManager">AccountManager</string>
+    <string name="LuckyNumberNone">No info about lucky number</string>
+    <string name="LuckyNumberText">Today lucky number is:</string>
+    <string name="AddAccount">Add account</string>
 </resources>

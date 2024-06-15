@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.google.gson.Gson
 import dev.medzik.android.components.rememberMutable
 import dev.medzik.android.components.rememberMutableBoolean
@@ -44,6 +45,7 @@ import io.github.vulka.impl.vulcan.VulcanUserClient
 import io.github.vulka.ui.R
 import io.github.vulka.ui.VulkaViewModel
 import io.github.vulka.ui.common.Avatar
+import io.github.vulka.ui.screens.dashboard.more.LuckyNumber
 import io.github.vulka.ui.utils.getInitials
 import kotlinx.serialization.Serializable
 import java.util.Date
@@ -59,6 +61,7 @@ class Start(
 @Composable
 fun StartScreen(
     args: Start,
+    navController: NavController,
     viewModel: VulkaViewModel = hiltViewModel()
 ) {
     val credentials = args.credentials
@@ -103,7 +106,7 @@ fun StartScreen(
                 modifier = Modifier.size(5.dp)
             )
             Row {
-                LuckyCard(luckyNumber)
+                LuckyCard(luckyNumber,navController)
             }
         }
     } else {
@@ -139,18 +142,21 @@ fun HeaderCard(student: Student) {
                     fontSize = 18.sp,
                     text = student.fullName
                 )
-                Text(student.classId)
+                Text(student.classId ?: "")
             }
         }
     }
 }
 
 @Composable
-fun LuckyCard(luckyNumber: Int) {
+fun LuckyCard(luckyNumber: Int,navController: NavController) {
     Surface(
         modifier = Modifier.padding(3.dp),
         shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.surfaceContainer
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        onClick = {
+            navController.navigate(LuckyNumber(luckyNumber))
+        }
     ) {
         Row(
             modifier = Modifier

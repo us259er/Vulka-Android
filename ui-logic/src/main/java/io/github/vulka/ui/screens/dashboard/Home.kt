@@ -1,5 +1,6 @@
 package io.github.vulka.ui.screens.dashboard
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,14 +8,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Backpack
 import androidx.compose.material.icons.filled.Dashboard
-import androidx.compose.material.icons.filled.Dataset
 import androidx.compose.material.icons.filled.Looks6
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -34,18 +35,17 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import dev.medzik.android.components.rememberMutable
 import dev.medzik.android.components.ui.DialogState
-import dev.medzik.android.components.ui.PickerDialog
 import dev.medzik.android.components.ui.rememberDialogState
-import dev.medzik.android.utils.runOnIOThread
-import dev.medzik.android.utils.runOnUiThread
 import io.github.vulka.core.api.Platform
-import io.github.vulka.core.api.types.Student
-import io.github.vulka.impl.librus.LibrusUserClient
+import io.github.vulka.database.Credentials
 import io.github.vulka.ui.R
 import io.github.vulka.ui.VulkaViewModel
 import io.github.vulka.ui.common.Avatar
 import io.github.vulka.ui.common.PickerDialogWithComponents
 import io.github.vulka.ui.crypto.decryptCredentials
+import io.github.vulka.ui.screens.dashboard.more.AccountManager
+import io.github.vulka.ui.screens.dashboard.more.LuckyNumber
+import io.github.vulka.ui.screens.dashboard.more.LuckyNumberScreen
 import io.github.vulka.ui.utils.getInitials
 import io.github.vulka.ui.utils.navtype.PlatformType
 import kotlinx.serialization.Serializable
@@ -72,7 +72,8 @@ fun HomeScreen(
 
     // TODO: make something better (Not string based)
     var bottomSelected by rememberMutable("start")
-    val student = viewModel.credentialRepository.getById(UUID.fromString(args.userId))!!.student
+    val currentDbCredentials = viewModel.credentialRepository.getById(UUID.fromString(args.userId))!!
+    val student = currentDbCredentials.student
 
     val dialogState = rememberDialogState()
 
@@ -165,7 +166,7 @@ fun HomeScreen(
                 typeMap = mapOf(typeOf<Platform>() to PlatformType)
             ) {
                 val arg = it.toRoute<Start>()
-                StartScreen(arg)
+                StartScreen(arg,bottomNavController)
             }
             composable<Grades> {
                 GradesScreen()
@@ -173,16 +174,23 @@ fun HomeScreen(
             composable<Timetable> {
                 TimetableScreen()
             }
+
+            composable<LuckyNumber> {
+                val arg = it.toRoute<LuckyNumber>()
+                LuckyNumberScreen(arg)
+            }
         }
     }
 
-    SelectAccount(dialogState)
+    SelectAccount(state = dialogState,credentials = currentDbCredentials,navController = navController)
 }
 
 
 @Composable
 fun SelectAccount(
     state: DialogState,
+    credentials: Credentials,
+    navController: NavController,
     viewModel: VulkaViewModel = hiltViewModel()
 ) {
     val students = viewModel.credentialRepository.getAll()
@@ -192,7 +200,11 @@ fun SelectAccount(
         title = stringResource(R.string.SelectAccount),
         items = students,
         onSelected = {
-
+            navController.navigate(Home(
+                userId = it.id.toString(),
+                platform = it.platform,
+                credentials = it.data
+            ))
         },
         content = {
             Row(
@@ -201,7 +213,13 @@ fun SelectAccount(
                     .heightIn(min = 64.dp)
                     .padding(10.dp),
             ) {
-                Avatar(text = it.student.getInitials())
+                Avatar(
+                    modifier = if (it.id == credentials.id)
+                            Modifier.border(1.dp,MaterialTheme.colorScheme.primary, RoundedCornerShape(50.dp))
+                        else
+                            Modifier,
+                    text = it.student.getInitials()
+                )
                 Column(
                     modifier = Modifier.padding(horizontal = 10.dp)
                 ) {
@@ -225,7 +243,8 @@ fun SelectAccount(
             TextButton(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
-
+                    state.hide()
+                    navController.navigate(AccountManager())
                 }
             ) {
                 Text(text = stringResource(R.string.AccountManager))

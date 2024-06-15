@@ -13,4 +13,7 @@
     <string name="None">Brak</string>
     <string name="SelectAccount">Wybierz Konto</string>
     <string name="AccountManager">Menadżer Kont</string>
+    <string name="LuckyNumberNone">Brak informacji o szczęśliwym numerku</string>
+    <string name="LuckyNumberText">Dzisiejszy szczęśliwy numerek to:</string>
+    <string name="AddAccount">Dodaj konto</string>
 </resources>
