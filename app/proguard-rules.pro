@@ -22,3 +22,7 @@
 
 # Fix SLF4J errors
 -dontwarn org.slf4j.impl.StaticLoggerBinder
+
+# TODO: better fix
+# java.lang.IllegalArgumentException: Cannot cast platform of type io.github.vulka.core.api.Platform to a NavType. Make sure to provide custom NavType for this argument.
+-keep class io.github.vulka.** { *; }
