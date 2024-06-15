@@ -60,7 +60,7 @@ fun ChooseStudentsScreen(
     }
 
     if (credentials is LibrusLoginCredentials) {
-        Log.d("Test",credentials.request.login)
+        Log.d("Test", credentials.request.login)
     }
 
     val client = when (args.platform) {
@@ -76,7 +76,6 @@ fun ChooseStudentsScreen(
 
     LaunchedEffect(Unit) {
         runOnIOThread {
-
             if (args.platform == Platform.Librus)
                 (client as LibrusUserClient).renewCredentials()
 
@@ -91,16 +90,14 @@ fun ChooseStudentsScreen(
 
     if (loaded) {
         Column(
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
             ) {
                 students.forEach { student ->
-                    StudentBox(student,selectedStudents)
+                    StudentBox(student, selectedStudents)
                 }
             }
 
@@ -142,6 +139,7 @@ fun ChooseStudentsScreen(
                     }
                 },
                 loading = loading,
+                enabled = selectedStudents.isNotEmpty(),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
@@ -161,7 +159,7 @@ fun ChooseStudentsScreen(
 }
 
 @Composable
-fun StudentBox(student: Student,studentsList: MutableList<Student>) {
+private fun StudentBox(student: Student,studentsList: MutableList<Student>) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
     ) {
