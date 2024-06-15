@@ -31,6 +31,11 @@ android {
                 "proguard-rules.pro"
             )
         }
+
+        debug {
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
+        }
     }
 
     compileOptions {
