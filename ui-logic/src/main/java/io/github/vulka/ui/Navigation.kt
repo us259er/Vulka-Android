@@ -18,6 +18,7 @@ import dev.medzik.android.components.icons.TopAppBarBackIcon
 import io.github.vulka.core.api.Platform
 import io.github.vulka.ui.common.DefaultScaffold
 import io.github.vulka.ui.common.MediumTopAppBarWithBack
+import io.github.vulka.ui.screens.ChoosePlatform
 import io.github.vulka.ui.screens.Welcome
 import io.github.vulka.ui.screens.WelcomeScreen
 import io.github.vulka.ui.screens.auth.ChooseStudents
@@ -45,12 +46,6 @@ fun VulkaNavigation(viewModel: VulkaViewModel = hiltViewModel()) {
                 userId = credentials.id.toString(),
                 credentials = credentials.data
             )
-
-//            ChooseStudents(
-//                platform = credentials.platform,
-//                credentials = credentials.data,
-//                userId = credentials.id.toString()
-//            )
         } else {
             Welcome
         }
@@ -75,6 +70,17 @@ fun VulkaNavigation(viewModel: VulkaViewModel = hiltViewModel()) {
     ) {
         composable<Welcome> {
             WelcomeScreen(navController)
+        }
+
+        composable<ChoosePlatform> {
+            DefaultScaffold(
+                topBar = {
+                    TopBarWithBack(R.string.SelectJournal,navController)
+                }
+            ) {
+                ChoosePlatform(navController)
+            }
+
         }
 
         composable<Login>(

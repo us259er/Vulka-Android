@@ -33,6 +33,7 @@ import io.github.vulka.core.api.types.Student
 import io.github.vulka.ui.R
 import io.github.vulka.ui.VulkaViewModel
 import io.github.vulka.ui.common.Avatar
+import io.github.vulka.ui.screens.ChoosePlatform
 import io.github.vulka.ui.screens.Welcome
 import io.github.vulka.ui.screens.dashboard.Home
 import io.github.vulka.ui.utils.getInitials
@@ -84,7 +85,7 @@ fun AccountManagerScreen(
         item {
             Button(
                 onClick = {
-                    navController.navigate(Welcome)
+                    navController.navigate(ChoosePlatform)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
