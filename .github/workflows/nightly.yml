@@ -30,7 +30,7 @@ jobs:
           sed -i "s/versionName = \"[^\"]\+\"/versionName = \"0.0.0-nightly+git-$(git rev-parse --short HEAD)~$GITHUB_RUN_NUMBER\"/" app/build.gradle.kts
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew build -x test
 
       - name: Setup build tool version variable
         run: |

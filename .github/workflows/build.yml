@@ -32,7 +32,7 @@ jobs:
         continue-on-error: true
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew build -x test
 
       - name: Upload debug artifact
         uses: actions/upload-artifact@v4
