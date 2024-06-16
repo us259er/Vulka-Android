@@ -16,4 +16,5 @@
     <string name="LuckyNumberNone">Brak informacji o szczęśliwym numerku</string>
     <string name="LuckyNumberText">Dzisiejszy szczęśliwy numerek to:</string>
     <string name="AddAccount">Dodaj konto</string>
+    <string name="ManageAccounts">Zarządzaj kontami</string>
 </resources>

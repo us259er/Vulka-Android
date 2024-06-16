@@ -185,12 +185,18 @@ fun HomeScreen(
         }
     }
 
-    SelectAccount(state = dialogState,credentials = currentDbCredentials,navController = navController)
+    SelectAccount(
+        state = dialogState,
+        credentials = currentDbCredentials,
+        navController = navController,
+        args = args
+    )
 }
 
 
 @Composable
 fun SelectAccount(
+    args: Home,
     state: DialogState,
     credentials: Credentials,
     navController: NavController,
@@ -253,10 +259,13 @@ fun SelectAccount(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
                     state.hide()
-                    navController.navigate(AccountManager())
+                    navController.navigate(AccountManager(
+                        userId = args.userId,
+                        platform = args.platform
+                    ))
                 }
             ) {
-                Text(text = stringResource(R.string.AccountManager))
+                Text(text = stringResource(R.string.ManageAccounts))
             }
         }
     )

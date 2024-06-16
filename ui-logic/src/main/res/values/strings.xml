@@ -22,4 +22,5 @@
     <string name="LuckyNumberNone">No info about lucky number</string>
     <string name="LuckyNumberText">Today lucky number is:</string>
     <string name="AddAccount">Add account</string>
+    <string name="ManageAccounts">Manage accounts</string>
 </resources>
