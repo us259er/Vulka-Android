@@ -23,4 +23,7 @@
     <string name="LuckyNumberText">Today lucky number is:</string>
     <string name="AddAccount">Add account</string>
     <string name="ManageAccounts">Manage accounts</string>
+    <string name="WelcomeScreen_Title">Welcome to Vulka</string>
+    <string name="WelcomeScreen_Description">Modern application for your e-journal</string>
+    <string name="GetStarted">Get Started</string>
 </resources>

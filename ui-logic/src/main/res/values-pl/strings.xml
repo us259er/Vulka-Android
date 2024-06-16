@@ -17,4 +17,7 @@
     <string name="LuckyNumberText">Dzisiejszy szczęśliwy numerek to:</string>
     <string name="AddAccount">Dodaj konto</string>
     <string name="ManageAccounts">Zarządzaj kontami</string>
+    <string name="WelcomeScreen_Title">Witaj w Vulka</string>
+    <string name="GetStarted">Rozpocznij</string>
+    <string name="WelcomeScreen_Description">Nowoczesna aplikacja dla twojego e-dziennika</string>
 </resources>

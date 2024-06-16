@@ -17,10 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.accompanist.drawablepainter.DrawablePainter
+import io.github.vulka.ui.R
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -61,13 +62,13 @@ fun WelcomeScreen(
             )
 
             Text(
-                text = "Witaj w Vulka",
+                text = stringResource(R.string.WelcomeScreen_Title),
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(top = 20.dp)
             )
 
             Text(
-                text = "Nowoczesna aplikacja dla twojego e-dziennika",
+                text = stringResource(R.string.WelcomeScreen_Description),
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(vertical = 20.dp)
             )
@@ -79,7 +80,7 @@ fun WelcomeScreen(
                     .padding(horizontal = 90.dp)
                     .padding(top = 8.dp)
             ) {
-                Text("Rozpocznij")
+                Text(stringResource(R.string.GetStarted))
             }
         }
     }
