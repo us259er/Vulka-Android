@@ -1,10 +1,10 @@
 package io.github.vulka.ui.screens.dashboard
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -32,7 +31,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import dev.medzik.android.components.rememberMutable
-import dev.medzik.android.components.rememberMutableBoolean
 import dev.medzik.android.components.rememberMutableString
 import dev.medzik.android.components.ui.IconBox
 import dev.medzik.android.utils.runOnIOThread
@@ -64,7 +62,6 @@ fun StartScreen(
     val pullToRefreshState = rememberPullToRefreshState()
     var luckyNumber by rememberMutable(0)
 
-    var loaded by rememberMutableBoolean(false)
     val student by rememberMutable(viewModel.credentialRepository.getById(UUID.fromString(args.userId))!!.student)
 
     // TODO: replace with SnackBar or something similar
@@ -76,6 +73,8 @@ fun StartScreen(
 
     LaunchedEffect(Unit) {
         runOnIOThread {
+            pullToRefreshState.startRefresh()
+
             updateUI()
 
             // Sync database
@@ -93,7 +92,7 @@ fun StartScreen(
 
             updateUI()
 
-            loaded = true
+            pullToRefreshState.endRefresh()
         }
     }
 
@@ -118,11 +117,14 @@ fun StartScreen(
         }
     }
 
-
-    Box {
+    Box(
+        modifier = Modifier
+            .nestedScroll(connection = pullToRefreshState.nestedScrollConnection)
+    ) {
         LazyColumn(
-            modifier = Modifier.padding(5.dp)
-                .nestedScroll(connection = pullToRefreshState.nestedScrollConnection)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(5.dp)
         ) {
             item {
                 HeaderCard(student)
@@ -134,18 +136,6 @@ fun StartScreen(
             item {
                 Row {
                     LuckyCard(luckyNumber,navController)
-                }
-            }
-
-            if (!loaded) {
-                item {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
                 }
             }
 
