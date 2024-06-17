@@ -6,6 +6,10 @@ import io.github.vulka.core.api.types.Grade
 import io.github.vulka.core.api.types.Parent
 import io.github.vulka.core.api.types.Student
 import io.github.vulka.core.api.types.StudentImpl
+import io.github.vulka.impl.librus.api.AccountType
+import io.github.vulka.impl.librus.api.luckyNumberAPI
+import io.github.vulka.impl.librus.api.meAPI
+import io.github.vulka.impl.librus.api.userProfileAPI
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
@@ -18,13 +22,12 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.renderCookieHeader
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import java.util.ArrayList
 import java.util.Date
 
 class LibrusUserClient(
-    private var credentials: LibrusLoginCredentials
+    internal var credentials: LibrusLoginCredentials
 ) : UserClient {
-    private lateinit var client: HttpClient
+    internal lateinit var client: HttpClient
 
     internal fun initClient(cookies: List<Cookie>) {
         client = HttpClient(OkHttp) {
@@ -46,28 +49,16 @@ class LibrusUserClient(
         val fullName = document.select("#body > div > div > table > tbody > tr:nth-child(1) > td")
         val className = document.select("#body > div > div > table > tbody > tr:nth-child(2) > td")
 
-        // check if the account is a parent
-        var parent: Parent? = null
-        try {
-            // "Student account" section in only on parent site
-            val studentAccountSection = document.select("#body > div > div > table > tbody > tr:nth-child(10) > td")
-
-            if (studentAccountSection.text() == "Konto Ucznia") {
-                val parentName = document.select("#body > div > div > table > tbody > tr:nth-child(7) > td")
-
-                parent = Parent(
-                    name = parentName.text()
-                )
-            }
-        } catch (_: Exception) {
-            // ignore
-        }
+        val userProfile = userProfileAPI()
+        val me = meAPI()
 
         return arrayOf(
             Student(
                 fullName = fullName.text(),
-                isParent = parent != null,
-                parent = parent,
+                isParent = userProfile.accountType == AccountType.Parent,
+                parent = Parent(
+                    name = "${me.account.firstName} ${me.account.lastName}"
+                ),
                 classId = className.text(),
                 impl = StudentImpl()
             )
@@ -75,41 +66,23 @@ class LibrusUserClient(
     }
 
     override suspend fun getLuckyNumber(student: Student, date: Date): Int {
-        val document = parse("${getBaseEndpoint(student)}/index")
-
-        val number = document.select(".luckyNumber")
-        return number.text().toInt()
+        val response = luckyNumberAPI()
+        return response.luckyNumber
     }
 
     override suspend fun getGrades(student: Student): Array<Grade> {
         val grades = ArrayList<Grade>()
-        grades.add(Grade(
-            value = 1.0f,
-            weight = 1.0f,
-            name = "Grade Stub1",
-            date = "2024-04-04",
-            subjectName = "Subject Stub1",
-            subjectCode = "subject stub",
-            teacherName = "Alice"
-        ))
-        grades.add(Grade(
-            value = 4.0f,
-            weight = 2.0f,
-            name = "Grade Stub2",
-            date = "2024-04-05",
-            subjectName = "Subject Stub2",
-            subjectCode = "subject stub2",
-            teacherName = "Bob"
-        ))
-        grades.add(Grade(
-            value = 4.0f,
-            weight = 2.0f,
-            name = "Grade Stub3",
-            date = "2024-04-06",
-            subjectName = "Subject Stub2",
-            subjectCode = "subject stub2",
-            teacherName = "Bob"
-        ))
+        grades.add(
+            Grade(
+                value = 1.0f,
+                weight = 1.0f,
+                name = "Stub",
+                date = "2024-04-04",
+                subjectName = "Stub",
+                subjectCode = "stub",
+                teacherName = "Stub Stub"
+            )
+        )
         return grades.toTypedArray()
     }
 
@@ -141,9 +114,9 @@ class LibrusUserClient(
         return Jsoup.parse(html)
     }
 
-    private fun getBaseEndpoint(student: Student): String {
-        return if (student.isParent) "/rodzic" else "/uczen"
-    }
+//    private fun getBaseEndpoint(student: Student): String {
+//        return if (student.isParent) "/rodzic" else "/uczen"
+//    }
 }
 
 fun HttpRequestBuilder.applyCookie(cookie: Cookie) = cookie.run {

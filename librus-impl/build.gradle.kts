@@ -22,9 +22,10 @@ android {
 }
 
 dependencies {
+    implementation(libs.gson)
+    implementation(libs.jsoup)
     implementation(libs.ktor.core)
     implementation(libs.ktor.okhttp)
-    implementation(libs.jsoup)
     implementation(projects.coreApi)
     implementation(projects.databaseLogic)
 
