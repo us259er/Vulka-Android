@@ -1,6 +1,5 @@
 package io.github.vulka.ui.screens.dashboard
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,7 +22,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -57,11 +55,7 @@ fun GradesScreen(args: Grades) {
         stringResource(R.string.Summary),
     )
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxSize()
-    ) {
+    Column {
         TabRow(
             selectedTabIndex = pagerState.currentPage,
             indicator = @Composable { tabPositions ->
@@ -71,8 +65,7 @@ fun GradesScreen(args: Grades) {
                         modifier = Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage])
                     )
                 }
-            },
-            modifier = Modifier.fillMaxWidth()
+            }
         ) {
             tabs.forEachIndexed { index, title ->
                 Tab(
@@ -91,15 +84,9 @@ fun GradesScreen(args: Grades) {
             state = pagerState,
             modifier = Modifier.weight(1f)
         ) { page ->
-            LazyColumn(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                item {
-                    when (page) {
-                        0 -> GradesTab(args)
-                        1 -> SummaryTab()
-                    }
-                }
+            when (page) {
+                0 -> GradesTab(args)
+                1 -> SummaryTab()
             }
         }
     }
@@ -115,42 +102,48 @@ fun GradesTab(
         val gradeList: List<Grade> = gradesDb.map { it.grade }
         val uniqueSubjectNames: Set<String> = gradeList.map { it.subjectName }.sortedBy { it }.toSet()
 
-        uniqueSubjectNames.forEach { subjectName ->
-            SubjectCard(
-                more = {
-                    val filterGrades = gradeList.filter { it.subjectName == subjectName }
+        LazyColumn(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            item {
+                uniqueSubjectNames.forEach { subjectName ->
+                    SubjectCard(
+                        more = {
+                            val filterGrades = gradeList.filter { it.subjectName == subjectName }
 
-                    filterGrades.forEach { grade ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(min = 32.dp)
-                                .padding(vertical = 2.dp),
-                        ) {
-                            Avatar(
-                                text = grade.value?.toString()?.replace("\\.0$".toRegex(), "") ?: "...",
-                                shape = AvatarShape.Rounded
-                            )
-                            Column(
-                                Modifier.fillMaxWidth()
-                                    .weight(1f)
-                                    .padding(horizontal = 10.dp)
-                            ) {
-                                Text(text = grade.name)
-                                Text(
-                                    fontSize = 12.sp,
-                                    text = "${grade.date}  Waga: ${grade.weight.toString().replace("\\.0$".toRegex(), "")}"
-                                )
+                            filterGrades.forEach { grade ->
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .heightIn(min = 32.dp)
+                                        .padding(vertical = 2.dp),
+                                ) {
+                                    Avatar(
+                                        text = grade.value?.toString()?.replace("\\.0$".toRegex(), "") ?: "...",
+                                        shape = AvatarShape.Rounded
+                                    )
+                                    Column(
+                                        Modifier.fillMaxWidth()
+                                            .weight(1f)
+                                            .padding(horizontal = 10.dp)
+                                    ) {
+                                        Text(text = grade.name)
+                                        Text(
+                                            fontSize = 12.sp,
+                                            text = "${grade.date}  Waga: ${grade.weight.toString().replace("\\.0$".toRegex(), "")}"
+                                        )
+                                    }
+                                }
                             }
                         }
+                    ) {
+                        Text(subjectName)
+                        Text(
+                            fontSize = 12.sp,
+                            text = "${viewModel.gradesRepository.countBySubjectAndCredentials(UUID.fromString(args.userId),subjectName)} Ocen"
+                        )
                     }
                 }
-            ) {
-                Text(subjectName)
-                Text(
-                    fontSize = 12.sp,
-                    text = "${viewModel.gradesRepository.countBySubjectAndCredentials(UUID.fromString(args.userId),subjectName)} Ocen"
-                )
             }
         }
     } else {
@@ -169,7 +162,9 @@ fun SubjectCard(
         onClick = {
             showMore = !showMore
         },
-        modifier = Modifier.fillMaxWidth().padding(3.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 12.dp),
         shape = MaterialTheme.shapes.medium,
         color = MaterialTheme.colorScheme.surfaceContainer
     ) {
@@ -180,7 +175,7 @@ fun SubjectCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(min = 64.dp)
-                    .padding(8.dp),
+                    .padding(12.dp),
             ) {
                 Column(
                     Modifier.fillMaxWidth()
@@ -196,7 +191,7 @@ fun SubjectCard(
 
             ExpandedIfNotEmpty(Unit.takeIf { showMore }) {
                 Column(
-                    modifier = Modifier.padding(8.dp),
+                    modifier = Modifier.padding(12.dp),
                 ) {
                     more()
                 }
@@ -207,5 +202,11 @@ fun SubjectCard(
 
 @Composable
 fun SummaryTab() {
-    Text(stringResource(R.string.Summary))
+    LazyColumn(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        item {
+            Text(stringResource(R.string.Summary))
+        }
+    }
 }
