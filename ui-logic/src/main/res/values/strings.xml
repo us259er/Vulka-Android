@@ -26,4 +26,5 @@
     <string name="WelcomeScreen_Title">Welcome to Vulka</string>
     <string name="WelcomeScreen_Description">Modern application for your e-journal</string>
     <string name="GetStarted">Get Started</string>
+    <string name="Summary">Summary</string>
 </resources>

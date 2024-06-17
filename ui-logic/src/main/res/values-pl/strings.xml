@@ -20,4 +20,5 @@
     <string name="WelcomeScreen_Title">Witaj w Vulka</string>
     <string name="GetStarted">Rozpocznij</string>
     <string name="WelcomeScreen_Description">Nowoczesna aplikacja dla twojego e-dziennika</string>
+    <string name="Summary">Podsumowanie</string>
 </resources>
