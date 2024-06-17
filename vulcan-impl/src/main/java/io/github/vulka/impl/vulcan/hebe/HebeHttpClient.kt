@@ -9,10 +9,12 @@ import io.github.vulka.impl.vulcan.*
 import io.github.vulka.impl.vulcan.hebe.login.HebeKeystore
 import io.github.vulka.impl.vulcan.hebe.types.ApiRequest
 import io.github.vulka.impl.vulcan.hebe.types.ApiResponse
-import okhttp3.*
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody.Companion.toRequestBody
+import io.ktor.client.*
+import io.ktor.client.engine.okhttp.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
+import kotlinx.coroutines.runBlocking
 import java.io.IOException
 import java.net.URLEncoder
 import java.text.SimpleDateFormat
@@ -30,7 +32,7 @@ class HebeHttpClient(private val keystore: HebeKeystore) {
         const val APP_USER_AGENT = "Dart/2.10 (dart:io)"
     }
 
-    private val client = OkHttpClient()
+    private val client = HttpClient(OkHttp)
 
     private fun getEncodedPath(fullUrl: String): String {
         val pattern = Pattern.compile("api/mobile/.+")
@@ -41,32 +43,31 @@ class HebeHttpClient(private val keystore: HebeKeystore) {
         return URLEncoder.encode(matcher.group(), "UTF-8").lowercase()
     }
 
-
     @Throws(IOException::class)
-    private fun buildHeaders(fullUrl: String, body: String? = null): Headers {
+    private fun buildHeaders(fullUrl: String, body: String? = null): Map<String, String> {
         val date = Date.from(ZonedDateTime.now().toInstant())
         val time = SimpleDateFormat("EEE, d MMM yyyy hh:mm:ss", Locale.ENGLISH).apply {
             timeZone = TimeZone.getTimeZone("GMT")
         }.format(date) + " GMT"
         val (_,fingerprint,privateKey) = keystore.getData()
 
-//        val headersMap = getSignatureHeaders(keystore.fingerprint, keystore.privateKey, body ?: "", fullUrl, ZonedDateTime.now())
         val (digest, canonicalUrl, signature) = getSignatureValues(fingerprint,privateKey, body, fullUrl,date )
-        val headersBuilder = Headers.Builder()
-            .add("User-Agent", APP_USER_AGENT)
-            .add("vOS", APP_OS)
-            .add("vDeviceModel", keystore.deviceModel)
-            .add("vAPI", "1")
-            .add("vDate", time)
-            .add("vCanonicalUrl", canonicalUrl )
-            .add("Signature", signature)
 
-        if (body != null) {
-            headersBuilder
-                .add("Digest", digest)
-                .add("Content-Type", "application/json")
+        val headers = mutableMapOf(
+            "User-Agent" to APP_USER_AGENT,
+            "vOS" to APP_OS,
+            "vDeviceModel" to keystore.deviceModel,
+            "vAPI" to "1",
+            "vDate" to time,
+            "vCanonicalUrl" to canonicalUrl,
+            "Signature" to signature
+        )
+
+        body?.let {
+            headers["Digest"] = digest
+            headers["Content-Type"] = "application/json"
         }
-        return headersBuilder.build()
+        return headers
     }
 
     private fun buildPayload(body: Any): ApiRequest {
@@ -85,119 +86,122 @@ class HebeHttpClient(private val keystore: HebeKeystore) {
     }
 
     @Throws(IOException::class)
-    fun <T> post(url: String, body: Any, clazz: Class<T>): T? {
+    fun <T> post(url: String, body: Any, clazz: Class<T>): T? = runBlocking {
         val payload = buildPayload(body)
         val payloadString = Gson().toJson(payload)
         val headers = buildHeaders(url, payloadString)
 
-        val request = Request.Builder()
-            .url(url)
-            .headers(headers)
-            .post(payloadString.toRequestBody("application/json".toMediaTypeOrNull()))
-            .build()
+        val response: HttpResponse = client.post(url) {
+            headers {
+                headers.forEach { (key, value) -> append(key, value) }
+            }
+            contentType(ContentType.Application.Json)
+            setBody(payloadString)
+        }
 
         logger.debug("HTTP: POST")
         logger.debug("HTTP Request URL: $url")
-
-        val response = client.newCall(request).execute()
-
-        logger.debug("HTTP Response code: ${response.code}")
-
-        when (response.code) {
-            // TODO: Fix problems with login
-//            200 -> {
-//                logger.debug("Throw InvalidTokenException")
-//                throw InvalidTokenException()
-//            }
-            108 -> {
-                logger.debug("Throw UnauthorizedCertificateException")
-                throw UnauthorizedCertificateException()
-            }
-            203 -> {
-                logger.debug("Throw InvalidPINException")
-                throw InvalidPINException()
-            }
-            204 -> {
-                logger.debug("Throw ExpiredTokenException")
-                throw ExpiredTokenException()
-            }
-            -1 -> {
-                logger.debug("Throw InvalidSymbolException")
-                throw InvalidSymbolException()
-            }
-            0 -> {
-                logger.debug("Throw VulcanAPIException")
-                throw VulcanAPIException("")
-            }
-        }
-
-        val responseBody = response.body?.string()
+        logger.debug("HTTP Response code: ${response.status.value}")
 
         val type = TypeToken.getParameterized(ApiResponse::class.java, clazz).type
-        return Gson().fromJson<ApiResponse<T>>(responseBody, type).envelope
+        val responseBody = response.bodyAsText()
+        val apiResponse = Gson().fromJson<ApiResponse<T>>(responseBody, type)
+
+        logger.debug("API Response code: ${apiResponse.status.code}")
+
+        checkErrors(apiResponse)
+
+        return@runBlocking apiResponse.envelope
     }
 
     @Throws(IOException::class)
-    fun <T> get(url: String, clazz: Class<T>, query: Map<String, String>? = null): T? {
+    fun <T> get(url: String, clazz: Class<T>, query: Map<String, String>? = null): T? = runBlocking {
+        val urlBuilder = URLBuilder(url)
 
+        query?.forEach { (key, value) ->
+            urlBuilder.parameters.append(key, value)
+        }
 
-        val urlBuilder = url.toHttpUrlOrNull()?.newBuilder()
+        val buildedUrl = urlBuilder.buildString()
+        val headers = buildHeaders(buildedUrl)
 
-        if (query != null) {
-            for ((key, value) in query) {
-                urlBuilder!!.addQueryParameter(key, value)
+        val response: HttpResponse = client.get(buildedUrl) {
+            headers {
+                headers.forEach { (key, value) -> append(key, value) }
             }
         }
 
-        val buildedUrl = urlBuilder!!.build()
-        val headers = buildHeaders(buildedUrl.toString())
-
-        val request = Request.Builder()
-            .url(buildedUrl)
-            .headers(headers)
-            .get()
-            .build()
-
         logger.debug("HTTP: GET")
         logger.debug("HTTP Request URL: $buildedUrl")
+        logger.debug("HTTP Response code: ${response.status.value}")
 
-        val response = client.newCall(request).execute()
-
-        logger.debug("HTTP Response code: ${response.code}")
-
-        val responseBody = response.body?.string()
+        val responseBody = response.bodyAsText()
 
         logger.debug("HTTP Response body: $responseBody")
 
         val type = TypeToken.getParameterized(ApiResponse::class.java, clazz).type
-        return Gson().fromJson<ApiResponse<T>>(responseBody, type).envelope
+        val apiResponse = Gson().fromJson<ApiResponse<T>>(responseBody, type)
+
+        logger.debug("API Response code: ${apiResponse.status.code}")
+
+        checkErrors(apiResponse)
+
+        return@runBlocking apiResponse.envelope
     }
 
     @Throws(IOException::class)
-    fun getDebug(url: String,query: Map<String, String>? = null): Response {
+    fun getDebug(url: String, query: Map<String, String>? = null): HttpResponse = runBlocking {
+        val urlBuilder = URLBuilder(url)
 
-
-        val urlBuilder = url.toHttpUrlOrNull()?.newBuilder()
-
-        if (query != null) {
-            for ((key, value) in query) {
-                urlBuilder!!.addQueryParameter(key, value)
-            }
+        query?.forEach { (key, value) ->
+            urlBuilder.parameters.append(key, value)
         }
 
-        val buildedUrl = urlBuilder!!.build()
-        val headers = buildHeaders(buildedUrl.toString())
+        val buildedUrl = urlBuilder.buildString()
+        val headers = buildHeaders(buildedUrl)
 
-        val request = Request.Builder()
-            .url(buildedUrl)
-            .headers(headers)
-            .get()
-            .build()
+        val response: HttpResponse = client.get(buildedUrl) {
+            headers {
+                headers.forEach { (key, value) -> append(key, value) }
+            }
+        }
 
         logger.debug("HTTP: GET (DEBUG)")
         logger.debug("HTTP Request URL: $buildedUrl")
 
-        return client.newCall(request).execute()
+        return@runBlocking response
     }
 
+    private fun checkErrors(apiResponse: ApiResponse<*>) {
+        if (apiResponse.status.code == 100 && apiResponse.status.message.contains(": "))
+            throw InvalidSignatureValuesException()
+
+        when (apiResponse.status.code) {
+            200 -> {
+                logger.debug("Throw InvalidTokenException")
+                throw InvalidTokenException(apiResponse.status.message)
+            }
+            108 -> {
+                logger.debug("Throw UnauthorizedCertificateException")
+                throw UnauthorizedCertificateException(apiResponse.status.message)
+            }
+            203 -> {
+                logger.debug("Throw InvalidPINException")
+                throw InvalidPINException(apiResponse.status.message)
+            }
+            204 -> {
+                logger.debug("Throw ExpiredTokenException")
+                throw ExpiredTokenException(apiResponse.status.message)
+            }
+            -1 -> {
+                logger.debug("Throw InvalidSymbolException")
+                throw InvalidSymbolException(apiResponse.status.message)
+            }
+        }
+
+        if (apiResponse.status.code != 0) {
+            logger.debug("Throw VulcanAPIException")
+            throw VulcanAPIException("")
+        }
+    }
 }
