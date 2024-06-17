@@ -2,6 +2,7 @@ package io.github.vulka.impl.librus
 
 import io.github.vulka.core.api.UserClient
 import io.github.vulka.core.api.response.AccountInfo
+import io.github.vulka.core.api.types.Grade
 import io.github.vulka.core.api.types.Parent
 import io.github.vulka.core.api.types.Student
 import io.github.vulka.core.api.types.StudentImpl
@@ -17,6 +18,7 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.renderCookieHeader
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import java.util.ArrayList
 import java.util.Date
 
 class LibrusUserClient(
@@ -77,6 +79,20 @@ class LibrusUserClient(
 
         val number = document.select(".luckyNumber")
         return number.text().toInt()
+    }
+
+    override suspend fun getGrades(student: Student): Array<Grade> {
+        val grades = ArrayList<Grade>()
+        grades.add(Grade(
+            value = 1.0f,
+            weight = 1.0f,
+            name = "Stub",
+            date = "2024-04-04",
+            subjectName = "Stub",
+            subjectCode = "stub",
+            teacherName = "Stub Stub"
+        ))
+        return grades.toTypedArray()
     }
 
     override suspend fun getAccountInfo(): AccountInfo {

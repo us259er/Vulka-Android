@@ -168,6 +168,7 @@ class HebeHttpClient(private val keystore: HebeKeystore) {
 
         logger.debug("HTTP: GET (DEBUG)")
         logger.debug("HTTP Request URL: $buildedUrl")
+        logger.debug("HTTP Response body: ${response.bodyAsText()}")
 
         return@runBlocking response
     }

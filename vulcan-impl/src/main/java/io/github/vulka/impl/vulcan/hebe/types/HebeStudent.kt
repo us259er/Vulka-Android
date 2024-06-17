@@ -32,7 +32,7 @@ data class HebeStudent(
     val messageBox: MessageBox,
 
     @SerializedName("Periods")
-    val periods: List<Period>
+    val periods: List<HebePeriod>
 ) : StudentImpl()
 
 data class Login(
@@ -115,7 +115,7 @@ data class School(
     val address: String? = null
 )
 
-data class Period(
+data class HebePeriod(
     @SerializedName("Id")
     val id: Int,
 
@@ -131,9 +131,10 @@ data class Period(
     @SerializedName("Last")
     val last: Boolean,
 
-//    @SerializedName("Start")
-//    val start: String,
-//
-//    @SerializedName("End")
-//    val end: String
+    @SerializedName("Start")
+    val start: HebeDate,
+
+    @SerializedName("End")
+    val end: HebeDate
 )
+

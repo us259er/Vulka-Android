@@ -6,8 +6,11 @@ import io.github.vulka.impl.vulcan.VulcanLoginCredentials
 import io.github.vulka.impl.vulcan.hebe.login.HebeKeystore
 import io.github.vulka.impl.vulcan.hebe.login.PfxRequest
 import io.github.vulka.impl.vulcan.hebe.types.HebeAccount
+import io.github.vulka.impl.vulcan.hebe.types.HebeGrade
 import io.github.vulka.impl.vulcan.hebe.types.HebeLuckyNumber
+import io.github.vulka.impl.vulcan.hebe.types.HebePeriod
 import io.github.vulka.impl.vulcan.hebe.types.HebeStudent
+import kotlinx.coroutines.runBlocking
 import okhttp3.*
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -110,7 +113,22 @@ class VulcanHebeApi {
         return response!!.number
     }
 
-    fun getGrades() {
+    fun getGrades(student: HebeStudent,period: HebePeriod): Array<HebeGrade> = runBlocking {
+        val baseUrl = getRestUrl(student)
 
+        val response = client.get(
+            url = "$baseUrl/${ApiEndpoints.DATA_ROOT}/${ApiEndpoints.DATA_GRADE}/${ApiEndpoints.DATA_BY_PUPIL}",
+            query = mapOf(
+                "unitId" to student.unit.id.toString(),
+                "pupilId" to student.pupil.id.toString(),
+                "periodId" to period.id.toString(),
+
+                "lastId" to "-2147483648",  // don't ask, it's just Vulcan
+                "pageSize" to 500.toString()
+            ),
+            clazz = Array<HebeGrade>::class.java
+        )!!
+
+        return@runBlocking response
     }
 }

@@ -3,6 +3,7 @@ package io.github.vulka.impl.vulcan
 import io.github.vulka.core.api.LoginCredentials
 import io.github.vulka.core.api.UserClient
 import io.github.vulka.core.api.response.AccountInfo
+import io.github.vulka.core.api.types.Grade
 import io.github.vulka.core.api.types.Parent
 import io.github.vulka.core.api.types.Student
 import io.github.vulka.impl.vulcan.hebe.VulcanHebeApi
@@ -41,6 +42,28 @@ class VulcanUserClient(
     override suspend fun getLuckyNumber(student: Student, date: Date): Int {
         val hebeStudent = student.impl as HebeStudent
         return api.getLuckyNumber(hebeStudent,date)
+    }
+
+    override suspend fun getGrades(student: Student): Array<Grade> {
+        val hebeStudent = student.impl as HebeStudent
+        val currentPeriod = hebeStudent.periods.find { it.current }!!
+        val response = api.getGrades(hebeStudent,currentPeriod)
+
+        val grades = ArrayList<Grade>()
+
+        for (grade in response) {
+            grades.add(Grade(
+                value = grade.value,
+                weight = grade.column.weight,
+                name = grade.column.name,
+                date = grade.dateCreated.date,
+                subjectName = grade.column.subject.name,
+                subjectCode = grade.column.subject.code,
+                teacherName = grade.teacherCreated.displayName
+            ))
+        }
+
+        return grades.toTypedArray()
     }
 
     override suspend fun getAccountInfo(): AccountInfo {
