@@ -137,7 +137,11 @@ fun HomeScreen(
                     selected = bottomSelected == "grades",
                     onClick = {
                         bottomSelected = "grades"
-                        bottomNavController.navigate(Grades)
+                        bottomNavController.navigate(Grades(
+                            platform = args.platform,
+                            userId = args.userId,
+                            credentials
+                        ))
                     }
                 )
                 NavigationBarItem(
@@ -171,8 +175,11 @@ fun HomeScreen(
                 val arg = it.toRoute<Start>()
                 StartScreen(arg,bottomNavController)
             }
-            composable<Grades> {
-                GradesScreen()
+            composable<Grades>(
+                typeMap = mapOf(typeOf<Platform>() to PlatformType)
+            ) {
+                val arg = it.toRoute<Grades>()
+                GradesScreen(arg)
             }
             composable<Timetable> {
                 TimetableScreen()

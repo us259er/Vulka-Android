@@ -86,11 +86,29 @@ class LibrusUserClient(
         grades.add(Grade(
             value = 1.0f,
             weight = 1.0f,
-            name = "Stub",
+            name = "Grade Stub1",
             date = "2024-04-04",
-            subjectName = "Stub",
-            subjectCode = "stub",
-            teacherName = "Stub Stub"
+            subjectName = "Subject Stub1",
+            subjectCode = "subject stub",
+            teacherName = "Alice"
+        ))
+        grades.add(Grade(
+            value = 4.0f,
+            weight = 2.0f,
+            name = "Grade Stub2",
+            date = "2024-04-05",
+            subjectName = "Subject Stub2",
+            subjectCode = "subject stub2",
+            teacherName = "Bob"
+        ))
+        grades.add(Grade(
+            value = 4.0f,
+            weight = 2.0f,
+            name = "Grade Stub3",
+            date = "2024-04-06",
+            subjectName = "Subject Stub2",
+            subjectCode = "subject stub2",
+            teacherName = "Bob"
         ))
         return grades.toTypedArray()
     }

@@ -2,6 +2,7 @@ package io.github.vulka.ui.sync
 
 import com.google.gson.Gson
 import io.github.vulka.core.api.Platform
+import io.github.vulka.database.Grades
 import io.github.vulka.database.LuckyNumber
 import io.github.vulka.impl.librus.LibrusLoginCredentials
 import io.github.vulka.impl.librus.LibrusUserClient
@@ -48,4 +49,16 @@ suspend fun sync(
         ))
     }
 
+    // Sync grades
+    val grades = client.getGrades(student)
+    viewModel.gradesRepository.deleteByCredentialsId(UUID.fromString(userId))
+
+    for (grade in grades) {
+        viewModel.gradesRepository.insert(
+            Grades(
+                grade = grade,
+                credentialsId = UUID.fromString(userId)
+            )
+        )
+    }
 }
