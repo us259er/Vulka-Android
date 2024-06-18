@@ -1,0 +1,140 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Librus API '/Grades' endpoint",
+  "type": "object",
+  "properties": {
+    "Grades": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "integer"
+          },
+          "Lesson": {
+            "type": "object",
+            "properties": {
+              "Id": {
+                "type": "integer"
+              },
+              "Url": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "Id",
+              "Url"
+            ]
+          },
+          "Subject": {
+            "type": "object",
+            "properties": {
+              "Id": {
+                "type": "integer"
+              },
+              "Url": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "Id",
+              "Url"
+            ]
+          },
+          "Student": {
+            "type": "object",
+            "properties": {
+              "Id": {
+                "type": "integer"
+              },
+              "Url": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "Id",
+              "Url"
+            ]
+          },
+          "Category": {
+            "type": "object",
+            "properties": {
+              "Id": {
+                "type": "integer"
+              },
+              "Url": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "Id",
+              "Url"
+            ]
+          },
+          "AddedBy": {
+            "type": "object",
+            "properties": {
+              "Id": {
+                "type": "integer"
+              },
+              "Url": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "Id",
+              "Url"
+            ]
+          },
+          "Grade": {
+            "type": "string"
+          },
+          "Date": {
+            "type": "string"
+          },
+          "AddDate": {
+            "type": "string"
+          },
+          "Semester": {
+            "type": "integer"
+          },
+          "IsConstituent": {
+            "type": "boolean"
+          },
+          "IsSemester": {
+            "type": "boolean"
+          },
+          "IsSemesterProposition": {
+            "type": "boolean"
+          },
+          "IsFinal": {
+            "type": "boolean"
+          },
+          "IsFinalProposition": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "Id",
+          "Lesson",
+          "Subject",
+          "Student",
+          "Category",
+          "AddedBy",
+          "Grade",
+          "Date",
+          "AddDate",
+          "Semester",
+          "IsConstituent",
+          "IsSemester",
+          "IsSemesterProposition",
+          "IsFinal",
+          "IsFinalProposition"
+        ]
+      }
+    }
+  },
+  "required": [
+    "Grades"
+  ]
+}

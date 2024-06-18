@@ -1,0 +1,69 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Librus API '/Users' endpoint",
+  "type": "object",
+  "properties": {
+    "Users": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "integer"
+          },
+          "AccountId": {
+            "type": "string"
+          },
+          "FirstName": {
+            "type": "string"
+          },
+          "LastName": {
+            "type": "string"
+          },
+          "IsSchoolAdministrator": {
+            "type": "boolean"
+          },
+          "IsEmployee": {
+            "type": "boolean"
+          },
+          "GroupId": {
+            "type": "integer"
+          },
+          "IsPedagogue": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "Id",
+          "AccountId",
+          "LastName",
+          "IsEmployee",
+          "GroupId"
+        ]
+      }
+    },
+    "pagination": {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "type": "integer"
+        },
+        "page": {
+          "type": "integer"
+        },
+        "total": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "limit",
+        "page",
+        "total"
+      ]
+    }
+  },
+  "required": [
+    "Users",
+    "pagination"
+  ]
+}

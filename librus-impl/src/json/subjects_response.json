@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Librus API '/Subjects' endpoint",
+  "type": "object",
+  "properties": {
+    "Subjects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "integer"
+          },
+          "Name": {
+            "type": "string"
+          },
+          "No": {
+            "type": "integer"
+          },
+          "Short": {
+            "type": "string"
+          },
+          "IsExtracurricular": {
+            "type": "boolean"
+          },
+          "IsBlockLesson": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "Id",
+          "Name",
+          "No",
+          "Short",
+          "IsExtracurricular",
+          "IsBlockLesson"
+        ]
+      }
+    }
+  },
+  "required": [
+    "Subjects"
+  ]
+}

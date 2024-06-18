@@ -1,0 +1,114 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Librus API '/Grades/Categories' endpoint",
+  "type": "object",
+  "properties": {
+    "Categories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "integer"
+          },
+          "Color": {
+            "type": "object",
+            "properties": {
+              "Id": {
+                "type": "integer"
+              },
+              "Url": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "Id",
+              "Url"
+            ]
+          },
+          "Name": {
+            "type": "string"
+          },
+          "AdultsExtramural": {
+            "type": "boolean"
+          },
+          "AdultsDaily": {
+            "type": "boolean"
+          },
+          "Standard": {
+            "type": "boolean"
+          },
+          "IsReadOnly": {
+            "type": "string"
+          },
+          "CountToTheAverage": {
+            "type": "boolean"
+          },
+          "Weight": {
+            "type": "integer"
+          },
+          "BlockAnyGrades": {
+            "type": "boolean"
+          },
+          "ObligationToPerform": {
+            "type": "boolean"
+          },
+          "IsFinal": {
+            "type": "boolean"
+          },
+          "IsSemestral": {
+            "type": "boolean"
+          },
+          "IsSemestralProposition": {
+            "type": "boolean"
+          },
+          "IsFinalProposition": {
+            "type": "boolean"
+          },
+          "IsSemestralInSchoolForAdults": {
+            "type": "boolean"
+          },
+          "Teacher": {
+            "type": "object",
+            "properties": {
+              "Id": {
+                "type": "integer"
+              },
+              "Url": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "Id",
+              "Url"
+            ]
+          },
+          "Short": {
+            "type": "string"
+          },
+          "AnnouncementDate": {
+            "type": "string"
+          },
+          "RealizationDate": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "Id",
+          "Color",
+          "Name",
+          "AdultsExtramural",
+          "AdultsDaily",
+          "Standard",
+          "IsReadOnly",
+          "CountToTheAverage",
+          "BlockAnyGrades",
+          "ObligationToPerform"
+        ]
+      }
+    }
+  },
+  "required": [
+    "Categories"
+  ]
+}
