@@ -21,6 +21,7 @@ import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.http.Cookie
 import io.ktor.http.HttpHeaders
 import io.ktor.http.renderCookieHeader
+import java.time.LocalDate
 import java.util.Date
 
 class LibrusUserClient(
@@ -83,7 +84,7 @@ class LibrusUserClient(
                     value = 1f,
                     weight = 1.0f,
                     name = grade.grade,
-                    date = grade.date,
+                    date = LocalDate.parse(grade.date),
                     subjectName = subject?.name ?: "stub",
                     subjectCode = "stub",
                     teacherName = "${teacher?.firstName} ${teacher?.lastName}"

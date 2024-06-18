@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import java.time.LocalDate
 import java.util.UUID
 
 @Dao
@@ -26,4 +27,7 @@ interface GradesDao {
 
     @Query("SELECT COUNT(*) FROM grades WHERE subjectName = :subjectName AND credentialsId = :id")
     fun countBySubjectAndCredentials(id: UUID,subjectName: String): Int
+
+    @Query("SELECT * FROM Grades WHERE DATE(date) >= DATE(:weekAgoDate) AND credentialsId = :id")
+    fun getFromLastWeek(id: UUID,weekAgoDate: LocalDate): List<Grades>?
 }

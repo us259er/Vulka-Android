@@ -9,6 +9,8 @@ import java.lang.reflect.Type
 import io.github.vulka.core.api.types.Student
 import io.github.vulka.core.api.types.StudentImpl
 import io.github.vulka.impl.vulcan.hebe.types.HebeStudent
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class Converters {
     @TypeConverter
@@ -30,6 +32,20 @@ class Converters {
         val type = object : TypeToken<Student>() {}.type
         val student = gson.fromJson<Student>(studentString, type)
         return student
+    }
+
+    private val formatter = DateTimeFormatter.ISO_LOCAL_DATE
+
+    @TypeConverter
+    fun fromString(value: String?): LocalDate? {
+        return value?.let {
+            LocalDate.parse(it, formatter)
+        }
+    }
+
+    @TypeConverter
+    fun localDateToString(date: LocalDate?): String? {
+        return date?.format(formatter)
     }
 }
 

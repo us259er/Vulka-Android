@@ -27,4 +27,6 @@
     <string name="WelcomeScreen_Description">Modern application for your e-journal</string>
     <string name="GetStarted">Get Started</string>
     <string name="Summary">Summary</string>
+    <string name="LatestGrades">Latest grades</string>
+    <string name="NoLatestGrades">No latest grades</string>
 </resources>
