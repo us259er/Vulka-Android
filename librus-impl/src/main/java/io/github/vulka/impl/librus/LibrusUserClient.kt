@@ -2,6 +2,7 @@ package io.github.vulka.impl.librus
 
 import io.github.vulka.core.api.UserClient
 import io.github.vulka.core.api.types.Grade
+import io.github.vulka.core.api.types.Lesson
 import io.github.vulka.core.api.types.Parent
 import io.github.vulka.core.api.types.Student
 import io.github.vulka.core.api.types.StudentImpl
@@ -107,6 +108,62 @@ class LibrusUserClient(
 //            )
 //        )
 //        return grades.toTypedArray()
+    }
+
+    // Some advanced stub
+    override suspend fun getLessons(
+        student: Student,
+        dateFrom: LocalDate,
+        dateTo: LocalDate
+    ): Array<Lesson> {
+        val lessons = ArrayList<Lesson>()
+
+        var currentDate = dateFrom
+        while (!currentDate.isAfter(dateTo)) {
+            for (i in 1..7) {
+                if (currentDate.isAfter(dateTo))
+                    break // Stop adding lessons beyond dateTo
+
+                val startTime = when (i) {
+                    1 -> "08:00"
+                    2 -> "09:00"
+                    3 -> "10:00"
+                    4 -> "11:00"
+                    5 -> "13:00"
+                    6 -> "14:00"
+                    7 -> "15:00"
+                    else -> "08:00"
+                }
+
+                val endTime = when (i) {
+                    1 -> "08:45"
+                    2 -> "09:45"
+                    3 -> "10:45"
+                    4 -> "11:45"
+                    5 -> "13:45"
+                    6 -> "14:45"
+                    7 -> "15:45"
+                    else -> "08:45"
+                }
+
+                lessons.add(
+                    Lesson(
+                        subjectName = "Stub subject",
+                        position = i,
+                        teacherName = "Stub teacher",
+                        room = "100",
+                        groupName = "stub.group",
+                        date = currentDate,
+                        startTime = startTime,
+                        endTime = endTime
+                    )
+                )
+            }
+
+            currentDate = currentDate.plusDays(1)
+        }
+
+        return lessons.toTypedArray()
     }
 }
 

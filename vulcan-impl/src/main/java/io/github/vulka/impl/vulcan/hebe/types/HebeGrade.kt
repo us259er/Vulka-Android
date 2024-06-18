@@ -66,27 +66,3 @@ data class HebeGradeCategory(
     @SerializedName("Code")
     val code: String
 )
-
-data class HebeTeacher(
-    @SerializedName("Id")
-    val id: Int,
-    @SerializedName("Name")
-    val name: String,
-    @SerializedName("Surname")
-    val surname: String,
-    @SerializedName("DisplayName")
-    val displayName: String
-)
-
-data class HebeSubject(
-    @SerializedName("Id")
-    val id: Int,
-    @SerializedName("Key")
-    val key: String,
-    @SerializedName("Name")
-    val name: String,
-    @SerializedName("Kod")
-    val code: String,
-    @SerializedName("Position")
-    val position: Int
-)

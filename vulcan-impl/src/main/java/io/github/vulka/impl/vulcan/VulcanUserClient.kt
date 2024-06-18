@@ -3,6 +3,7 @@ package io.github.vulka.impl.vulcan
 import io.github.vulka.core.api.LoginCredentials
 import io.github.vulka.core.api.UserClient
 import io.github.vulka.core.api.types.Grade
+import io.github.vulka.core.api.types.Lesson
 import io.github.vulka.core.api.types.Parent
 import io.github.vulka.core.api.types.Student
 import io.github.vulka.impl.vulcan.hebe.VulcanHebeApi
@@ -65,5 +66,35 @@ class VulcanUserClient(
         }
 
         return grades.toTypedArray()
+    }
+
+    override suspend fun getLessons(student: Student, dateFrom: LocalDate, dateTo: LocalDate): Array<Lesson> {
+        val hebeStudent = student.impl as HebeStudent
+
+        val lessonsResponse = api.getLessons(hebeStudent,dateFrom,dateTo)
+        val changedLesson = api.getChangedLessons(hebeStudent,dateFrom,dateTo)
+
+        val lessons = ArrayList<Lesson>()
+
+        for (lesson in lessonsResponse) {
+            // Skip lessons that is not for this student
+            if (!lesson.visible)
+                continue
+
+            lessons.add(
+                Lesson(
+                    subjectName = lesson.subject.name,
+                    startTime = lesson.time.from,
+                    endTime = lesson.time.to,
+                    room = lesson.room?.code,
+                    position = lesson.time.position,
+                    change = null,
+                    date = LocalDate.parse(lesson.date.date),
+                    teacherName = lesson.teacher.name
+                )
+            )
+        }
+
+        return lessons.toTypedArray()
     }
 }

@@ -6,7 +6,9 @@ import io.github.vulka.impl.vulcan.VulcanLoginCredentials
 import io.github.vulka.impl.vulcan.hebe.login.HebeKeystore
 import io.github.vulka.impl.vulcan.hebe.login.PfxRequest
 import io.github.vulka.impl.vulcan.hebe.types.HebeAccount
+import io.github.vulka.impl.vulcan.hebe.types.HebeChangedLesson
 import io.github.vulka.impl.vulcan.hebe.types.HebeGrade
+import io.github.vulka.impl.vulcan.hebe.types.HebeLesson
 import io.github.vulka.impl.vulcan.hebe.types.HebeLuckyNumber
 import io.github.vulka.impl.vulcan.hebe.types.HebePeriod
 import io.github.vulka.impl.vulcan.hebe.types.HebeStudent
@@ -127,6 +129,58 @@ class VulcanHebeApi {
                 "pageSize" to 500.toString()
             ),
             clazz = Array<HebeGrade>::class.java
+        )!!
+
+        return@runBlocking response
+    }
+
+    fun getLessons(student: HebeStudent,dateFrom: LocalDate = LocalDate.parse("2024-06-12"),dateTo: LocalDate = dateFrom): Array<HebeLesson> = runBlocking {
+        val baseUrl = getRestUrl(student)
+
+        val currentPeriod = student.periods.find { it.current }!!
+
+        val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+
+        val response = client.get(
+            url = "$baseUrl/${ApiEndpoints.DATA_ROOT}/${ApiEndpoints.DATA_TIMETABLE}/${ApiEndpoints.DATA_BY_PUPIL}",
+            query = mapOf(
+                "unitId" to student.unit.id.toString(),
+                "pupilId" to student.pupil.id.toString(),
+                "periodId" to currentPeriod.id.toString(),
+
+                "lastId" to "-2147483648",  // don't ask, it's just Vulcan
+                "pageSize" to 500.toString(),
+
+                "dateFrom" to dateFrom.format(dateFormatter),
+                "dateTo" to dateTo.format(dateFormatter)
+            ),
+            clazz = Array<HebeLesson>::class.java
+        )!!
+
+        return@runBlocking response
+    }
+
+    fun getChangedLessons(student: HebeStudent,dateFrom: LocalDate = LocalDate.parse("2024-06-12"),dateTo: LocalDate = dateFrom): Array<HebeChangedLesson> = runBlocking {
+        val baseUrl = getRestUrl(student)
+
+        val currentPeriod = student.periods.find { it.current }!!
+
+        val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+
+        val response = client.get(
+            url = "$baseUrl/${ApiEndpoints.DATA_ROOT}/${ApiEndpoints.DATA_TIMETABLE_CHANGES}/${ApiEndpoints.DATA_BY_PUPIL}",
+            query = mapOf(
+                "unitId" to student.unit.id.toString(),
+                "pupilId" to student.pupil.id.toString(),
+                "periodId" to currentPeriod.id.toString(),
+
+                "lastId" to "-2147483648",  // don't ask, it's just Vulcan
+                "pageSize" to 500.toString(),
+
+                "dateFrom" to dateFrom.format(dateFormatter),
+                "dateTo" to dateTo.format(dateFormatter)
+            ),
+            clazz = Array<HebeChangedLesson>::class.java
         )!!
 
         return@runBlocking response
