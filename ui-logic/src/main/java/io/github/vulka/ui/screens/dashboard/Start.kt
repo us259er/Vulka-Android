@@ -228,7 +228,9 @@ fun GradesCard(
 
                             for (grade in filterGrades) {
                                 Card(
-                                    modifier = Modifier.padding(horizontal = 2.dp).size(25.dp)
+                                    modifier = Modifier
+                                        .padding(horizontal = 2.dp)
+                                        .size(25.dp)
                                 ) {
                                     Column(
                                         modifier = Modifier.fillMaxSize(),
@@ -236,8 +238,8 @@ fun GradesCard(
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
                                         Text(
-                                            fontSize = 15.sp, text = grade.value?.toString()
-                                                ?.replace("\\.0$".toRegex(), "") ?: "..."
+                                            text = grade.value.str,
+                                            fontSize = 15.sp
                                         )
                                     }
                                 }

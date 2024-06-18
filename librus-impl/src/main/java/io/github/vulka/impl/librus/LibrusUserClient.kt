@@ -85,7 +85,7 @@ class LibrusUserClient(
             gradesList.add(
                 Grade(
                     value = Grade.Value.fromValue(grade.grade),
-                    weight = category.weight,
+                    weight = category.weight ?: 0f,
                     name = category.name,
                     date = LocalDate.parse(grade.date),
                     subjectName = subject.name,
@@ -96,20 +96,6 @@ class LibrusUserClient(
         }
 
         return gradesList.toTypedArray()
-
-//        val grades = ArrayList<Grade>()
-//        grades.add(
-//            Grade(
-//                value = 1.0f,
-//                weight = 1.0f,
-//                name = "Stub",
-//                date = "2024-04-04",
-//                subjectName = "Stub",
-//                subjectCode = "stub",
-//                teacherName = "Stub Stub"
-//            )
-//        )
-//        return grades.toTypedArray()
     }
 
     // Some advanced stub

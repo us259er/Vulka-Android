@@ -120,6 +120,7 @@ fun HomeScreen(
                         viewModel = viewModel
                     )
                 } catch (e: Exception) {
+                    e.printStackTrace()
                     refreshed = true
                 }
 

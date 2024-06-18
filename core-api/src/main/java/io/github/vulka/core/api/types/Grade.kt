@@ -28,11 +28,14 @@ data class Grade(
         Five("5", 5f),
         FivePlus("5+", 5.5f),
         SixMinus("6-", 5.75f),
-        Six("6", 6f);
+        Six("6", 6f),
+        Plus("+", 0f),
+        Minus("-", 0f),
+        Other("", 0f);
 
         companion object {
-            fun fromValue(str: String) = entries.first { it.str == str }
-            fun fromValue(f: Float) = entries.first { it.f == f }
+            fun fromValue(str: String) = entries.find { it.str == str } ?: Other
+            fun fromValue(f: Float) = entries.find { it.f == f } ?: Other
         }
     }
 }
