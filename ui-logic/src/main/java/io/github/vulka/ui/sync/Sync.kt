@@ -1,5 +1,6 @@
 package io.github.vulka.ui.sync
 
+import android.util.Log
 import com.google.gson.Gson
 import io.github.vulka.core.api.Platform
 import io.github.vulka.database.Grades
@@ -18,6 +19,7 @@ suspend fun sync(
     credentials: String,
     viewModel: VulkaViewModel
 ) {
+    Log.d("Dupa", credentials)
     val client = when (platform) {
         Platform.Vulcan -> {
             val loginData = Gson().fromJson(credentials, VulcanLoginCredentials::class.java)

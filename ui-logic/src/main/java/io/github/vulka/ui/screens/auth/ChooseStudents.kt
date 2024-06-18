@@ -128,7 +128,8 @@ fun ChooseStudentsScreen(
                                 Home(
                                     userId = firstCredentials!!.id.toString(),
                                     credentials = firstCredentials.data,
-                                    platform = args.platform
+                                    platform = args.platform,
+                                    firstSync = true
                                 )
                             ) {
                                 popUpTo(navController.graph.findStartDestination().id) {

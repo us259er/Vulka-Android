@@ -1,6 +1,7 @@
 package io.github.vulka.ui.screens.dashboard
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,10 +17,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.material3.pulltorefresh.PullToRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -33,14 +32,12 @@ import androidx.navigation.NavController
 import dev.medzik.android.components.rememberMutable
 import dev.medzik.android.components.rememberMutableString
 import dev.medzik.android.components.ui.IconBox
-import dev.medzik.android.utils.runOnIOThread
 import io.github.vulka.core.api.Platform
 import io.github.vulka.core.api.types.Student
 import io.github.vulka.ui.R
 import io.github.vulka.ui.VulkaViewModel
 import io.github.vulka.ui.common.Avatar
 import io.github.vulka.ui.screens.dashboard.more.LuckyNumber
-import io.github.vulka.ui.sync.sync
 import io.github.vulka.ui.utils.getInitials
 import kotlinx.serialization.Serializable
 import java.util.UUID
@@ -49,7 +46,7 @@ import java.util.UUID
 class Start(
     val platform: Platform,
     val userId: String,
-    val credentials: String
+    val credentials: String,
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,9 +54,12 @@ class Start(
 fun StartScreen(
     args: Start,
     navController: NavController,
+    pullRefresh: @Composable BoxScope.() -> Unit = {},
+    pullToRefreshState: PullToRefreshState,
+
+    refreshed: Boolean,
     viewModel: VulkaViewModel = hiltViewModel()
 ) {
-    val pullToRefreshState = rememberPullToRefreshState()
     var luckyNumber by rememberMutable(0)
 
     val student by rememberMutable(viewModel.credentialRepository.getById(UUID.fromString(args.userId))!!.student)
@@ -71,51 +71,8 @@ fun StartScreen(
         luckyNumber = viewModel.luckyNumberRepository.getByCredentialsId(UUID.fromString(args.userId))?.number ?: 0
     }
 
-    LaunchedEffect(Unit) {
-        runOnIOThread {
-            pullToRefreshState.startRefresh()
-
-            updateUI()
-
-            // Sync database
-            try {
-                sync(
-                    platform = args.platform,
-                    userId = args.userId,
-                    credentials = args.credentials,
-                    viewModel = viewModel
-                )
-                errorText = ""
-            } catch (e: Exception) {
-                errorText = e.message ?: ""
-            }
-
-            updateUI()
-
-            pullToRefreshState.endRefresh()
-        }
-    }
-
-    if (pullToRefreshState.isRefreshing) {
-        LaunchedEffect(Unit) {
-            runOnIOThread {
-                // Sync database
-                try {
-                    sync(
-                        platform = args.platform,
-                        userId = args.userId,
-                        credentials = args.credentials,
-                        viewModel = viewModel
-                    )
-                    errorText = ""
-                } catch (e: Exception) {
-                    errorText = e.message ?: ""
-                }
-                updateUI()
-                pullToRefreshState.endRefresh()
-            }
-        }
-    }
+    if (refreshed)
+        updateUI()
 
     Box(
         modifier = Modifier
@@ -144,10 +101,7 @@ fun StartScreen(
             }
         }
 
-        PullToRefreshContainer(
-            modifier = Modifier.align(alignment = Alignment.TopCenter),
-            state = pullToRefreshState,
-        )
+        pullRefresh()
     }
 }
 

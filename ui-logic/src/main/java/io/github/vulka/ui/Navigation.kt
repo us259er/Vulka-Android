@@ -44,7 +44,8 @@ fun VulkaNavigation(viewModel: VulkaViewModel = hiltViewModel()) {
             Home(
                 platform = credentials.platform,
                 userId = credentials.id.toString(),
-                credentials = credentials.data
+                credentials = credentials.data,
+                firstSync = false
             )
         } else {
             Welcome

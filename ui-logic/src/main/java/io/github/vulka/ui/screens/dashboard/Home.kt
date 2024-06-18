@@ -1,7 +1,9 @@
 package io.github.vulka.ui.screens.dashboard
 
+import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,9 +24,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -37,8 +43,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import dev.medzik.android.components.rememberMutable
+import dev.medzik.android.components.rememberMutableBoolean
 import dev.medzik.android.components.ui.DialogState
 import dev.medzik.android.components.ui.rememberDialogState
+import dev.medzik.android.utils.runOnIOThread
 import io.github.vulka.core.api.Platform
 import io.github.vulka.database.Credentials
 import io.github.vulka.ui.R
@@ -49,6 +57,7 @@ import io.github.vulka.ui.crypto.decryptCredentials
 import io.github.vulka.ui.screens.dashboard.more.AccountManager
 import io.github.vulka.ui.screens.dashboard.more.LuckyNumber
 import io.github.vulka.ui.screens.dashboard.more.LuckyNumberScreen
+import io.github.vulka.ui.sync.sync
 import io.github.vulka.ui.utils.getInitials
 import io.github.vulka.ui.utils.navtype.PlatformType
 import kotlinx.serialization.Serializable
@@ -59,7 +68,8 @@ import kotlin.reflect.typeOf
 class Home(
     val platform: Platform,
     val userId: String,
-    val credentials: String
+    val credentials: String,
+    val firstSync: Boolean,
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -69,6 +79,7 @@ fun HomeScreen(
     navController: NavController,
     viewModel: VulkaViewModel = hiltViewModel()
 ) {
+    val pullToRefreshState = rememberPullToRefreshState()
 
     val bottomNavController = rememberNavController()
     val credentials = decryptCredentials(args.credentials)
@@ -79,6 +90,53 @@ fun HomeScreen(
     val student = currentDbCredentials.student
 
     val dialogState = rememberDialogState()
+
+    // If data was synchronized when open app
+    var wasRefreshed by rememberMutableBoolean()
+
+    // If data was saved in DB and now can be safely loaded
+    var refreshed by rememberMutableBoolean(!args.firstSync)
+
+    LaunchedEffect(Unit) {
+        if (!wasRefreshed) {
+            pullToRefreshState.startRefresh()
+            wasRefreshed = true
+        }
+    }
+
+    if (pullToRefreshState.isRefreshing) {
+        LaunchedEffect(Unit) {
+            runOnIOThread {
+                // Sync database
+                refreshed = false
+
+                Log.d("Home Screen","Sync running...")
+
+                try {
+                    sync(
+                        platform = args.platform,
+                        userId = args.userId,
+                        credentials = credentials,
+                        viewModel = viewModel
+                    )
+                } catch (e: Exception) {
+                    refreshed = true
+                }
+
+                pullToRefreshState.endRefresh()
+                refreshed = true
+            }
+        }
+    }
+
+
+    @Composable
+    fun BoxScope.pullToRefresh() {
+        PullToRefreshContainer(
+            modifier = Modifier.align(alignment = Alignment.TopCenter),
+            state = pullToRefreshState,
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -123,7 +181,7 @@ fun HomeScreen(
                         bottomNavController.navigate(Start(
                             platform = args.platform,
                             userId = args.userId,
-                            credentials
+                            credentials = credentials,
                         ))
                     }
                 )
@@ -140,7 +198,7 @@ fun HomeScreen(
                         bottomNavController.navigate(Grades(
                             platform = args.platform,
                             userId = args.userId,
-                            credentials
+                            credentials = credentials,
                         ))
                     }
                 )
@@ -165,7 +223,7 @@ fun HomeScreen(
             startDestination = Start(
                 platform = args.platform,
                 userId = args.userId,
-                credentials
+                credentials = credentials,
             ),
             modifier = Modifier.fillMaxSize().padding(innerPadding)
         ) {
@@ -173,13 +231,28 @@ fun HomeScreen(
                 typeMap = mapOf(typeOf<Platform>() to PlatformType)
             ) {
                 val arg = it.toRoute<Start>()
-                StartScreen(arg,bottomNavController)
+                StartScreen(
+                    args = arg,
+                    navController = bottomNavController,
+                    pullToRefreshState = pullToRefreshState,
+                    pullRefresh = {
+                        pullToRefresh()
+                    },
+                    refreshed = refreshed
+                )
             }
             composable<Grades>(
                 typeMap = mapOf(typeOf<Platform>() to PlatformType)
             ) {
                 val arg = it.toRoute<Grades>()
-                GradesScreen(arg)
+                GradesScreen(
+                    args = arg,
+                    pullToRefreshState = pullToRefreshState,
+                    pullRefresh = {
+                        pullToRefresh()
+                    },
+                    refreshed = refreshed
+                )
             }
             composable<Timetable> {
                 TimetableScreen()
@@ -220,7 +293,8 @@ fun SelectAccount(
                 Home(
                     userId = it.id.toString(),
                     platform = it.platform,
-                    credentials = it.data
+                    credentials = it.data,
+                    firstSync = false
                 )
             ) {
                 popUpTo(navController.graph.findStartDestination().id) {

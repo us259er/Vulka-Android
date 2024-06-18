@@ -123,7 +123,8 @@ fun check(
         navController.navigate(Home(
             userId = firstCredential.id.toString(),
             credentials = firstCredential.data,
-            platform = firstCredential.platform
+            platform = firstCredential.platform,
+            firstSync = false
         )) {
             popUpTo(navController.graph.findStartDestination().id) {
                 saveState = false
