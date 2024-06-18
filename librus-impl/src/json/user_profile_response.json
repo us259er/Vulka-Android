@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Librus API '/UserProfile' endpoint",
+  "type": "object",
+  "properties": {
+    "UserProfile": {
+      "type": "object",
+      "properties": {
+        "ClassNumber": {
+          "type": "integer"
+        },
+        "AccountType": {
+          "type": "string",
+          "enum": ["parent", "student"]
+        },
+        "Town": {
+          "type": "string"
+        },
+        "State": {
+          "type": "string"
+        },
+        "UnitType": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "ClassNumber",
+        "AccountType",
+        "Town",
+        "State",
+        "UnitType"
+      ]
+    }
+  },
+  "required": [
+    "UserProfile"
+  ]
+}

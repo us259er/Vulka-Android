@@ -3,6 +3,7 @@ package io.github.vulka.impl.librus
 import io.github.vulka.core.api.LoginClient
 import io.github.vulka.core.api.LoginCredentials
 import io.github.vulka.core.api.LoginData
+import io.github.vulka.impl.librus.internal.api.internalRequestMe
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.cookies.HttpCookies
@@ -42,7 +43,7 @@ class LibrusLoginClient : LoginClient {
         // check if user is logged in
         val userClient = LibrusUserClient(credentials)
         userClient.initClient(cookies)
-        userClient.getAccountInfo()
+        userClient.internalRequestMe()
 
         return credentials
     }

@@ -2,7 +2,6 @@ package io.github.vulka.impl.vulcan
 
 import io.github.vulka.core.api.LoginCredentials
 import io.github.vulka.core.api.UserClient
-import io.github.vulka.core.api.response.AccountInfo
 import io.github.vulka.core.api.types.Grade
 import io.github.vulka.core.api.types.Parent
 import io.github.vulka.core.api.types.Student
@@ -64,9 +63,5 @@ class VulcanUserClient(
         }
 
         return grades.toTypedArray()
-    }
-
-    override suspend fun getAccountInfo(): AccountInfo {
-        TODO("Not yet implemented")
     }
 }

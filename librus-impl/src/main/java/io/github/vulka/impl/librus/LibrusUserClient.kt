@@ -1,27 +1,23 @@
 package io.github.vulka.impl.librus
 
 import io.github.vulka.core.api.UserClient
-import io.github.vulka.core.api.response.AccountInfo
 import io.github.vulka.core.api.types.Grade
 import io.github.vulka.core.api.types.Parent
 import io.github.vulka.core.api.types.Student
 import io.github.vulka.core.api.types.StudentImpl
-import io.github.vulka.impl.librus.api.AccountType
-import io.github.vulka.impl.librus.api.luckyNumberAPI
-import io.github.vulka.impl.librus.api.meAPI
-import io.github.vulka.impl.librus.api.userProfileAPI
+import io.github.vulka.impl.librus.internal.api.internalRequestClass
+import io.github.vulka.impl.librus.internal.api.internalRequestLuckyNumber
+import io.github.vulka.impl.librus.internal.api.internalRequestMe
+import io.github.vulka.impl.librus.internal.api.internalRequestUserProfile
+import io.github.vulka.impl.librus.internal.api.types.UserProfile
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.cookies.ConstantCookiesStorage
 import io.ktor.client.plugins.cookies.HttpCookies
 import io.ktor.client.request.HttpRequestBuilder
-import io.ktor.client.request.get
 import io.ktor.http.Cookie
 import io.ktor.http.HttpHeaders
 import io.ktor.http.renderCookieHeader
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
 import java.util.Date
 
 class LibrusUserClient(
@@ -44,29 +40,26 @@ class LibrusUserClient(
     }
 
     override suspend fun getStudents(): Array<Student> {
-        val document = parse("/informacja")
-
-        val fullName = document.select("#body > div > div > table > tbody > tr:nth-child(1) > td")
-        val className = document.select("#body > div > div > table > tbody > tr:nth-child(2) > td")
-
-        val userProfile = userProfileAPI()
-        val me = meAPI()
+        val userProfile = internalRequestUserProfile()
+        val me = internalRequestMe()
+        val classInfo = internalRequestClass(me.class_.id)
 
         return arrayOf(
             Student(
-                fullName = fullName.text(),
-                isParent = userProfile.accountType == AccountType.Parent,
+                // maybe "user" for parent account and "account" for student account
+                fullName = "${me.user.firstName} ${me.user.lastName}",
+                isParent = userProfile.accountType == UserProfile.AccountType.PARENT,
                 parent = Parent(
                     name = "${me.account.firstName} ${me.account.lastName}"
                 ),
-                classId = className.text(),
+                classId = "${classInfo.number}${classInfo.symbol}",
                 impl = StudentImpl()
             )
         )
     }
 
     override suspend fun getLuckyNumber(student: Student, date: Date): Int {
-        val response = luckyNumberAPI()
+        val response = internalRequestLuckyNumber()
         return response.luckyNumber
     }
 
@@ -85,38 +78,6 @@ class LibrusUserClient(
         )
         return grades.toTypedArray()
     }
-
-    override suspend fun getAccountInfo(): AccountInfo {
-        val document = parse("/informacja")
-
-        val fullName = document.select("#body > div > div > table > tbody > tr:nth-child(1) > td")
-        val className = document.select("#body > div > div > table > tbody > tr:nth-child(2) > td")
-        val index = document.select("#body > div > div > table > tbody > tr:nth-child(3) > td")
-        val educator = document.select("#body > div > div > table > tbody > tr:nth-child(4) > td")
-
-        return AccountInfo(
-            fullName = fullName.text(),
-            className = className.text(),
-            index = index.text().toInt(),
-            educator = educator.text()
-        )
-    }
-
-    private suspend fun parse(endpoint: String): Document {
-        val response = client.get("https://synergia.librus.pl$endpoint") {
-            credentials.cookies.forEach {
-                applyCookie(it)
-            }
-        }
-
-        val html: String = response.body()
-
-        return Jsoup.parse(html)
-    }
-
-//    private fun getBaseEndpoint(student: Student): String {
-//        return if (student.isParent) "/rodzic" else "/uczen"
-//    }
 }
 
 fun HttpRequestBuilder.applyCookie(cookie: Cookie) = cookie.run {

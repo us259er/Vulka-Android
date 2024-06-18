@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "Librus API '/LuckyNumbers' endpoint",
+  "type": "object",
+  "properties": {
+    "LuckyNumber": {
+      "type": "object",
+      "properties": {
+        "LuckyNumber": {
+          "type": "integer"
+        },
+        "LuckyNumberDay": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "LuckyNumber",
+        "LuckyNumberDay"
+      ]
+    }
+  },
+  "required": [
+    "LuckyNumber"
+  ]
+}

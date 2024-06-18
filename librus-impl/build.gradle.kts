@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.library)
+    alias(libs.plugins.jsonschema2pojo)
     alias(libs.plugins.kotlin.android)
 }
 
@@ -23,7 +24,6 @@ android {
 
 dependencies {
     implementation(libs.gson)
-    implementation(libs.jsoup)
     implementation(libs.ktor.core)
     implementation(libs.ktor.okhttp)
     implementation(projects.coreApi)
@@ -31,4 +31,15 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
+}
+
+jsonSchema2Pojo {
+    setSource(layout.projectDirectory.files("src/json"))
+    targetPackage = "io.github.vulka.impl.librus.internal.api.types"
+
+    targetVersion = JavaVersion.VERSION_17.toString()
+
+    setAnnotationStyle("gson")
+    includeHashcodeAndEquals = false
+    includeToString = false
 }

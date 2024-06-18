@@ -1,0 +1,110 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Librus API '/Me' endpoint",
+  "type": "object",
+  "properties": {
+    "Me": {
+      "type": "object",
+      "properties": {
+        "Account": {
+          "type": "object",
+          "properties": {
+            "Id": {
+              "type": "integer"
+            },
+            "UserId": {
+              "type": "integer"
+            },
+            "FirstName": {
+              "type": "string"
+            },
+            "LastName": {
+              "type": "string"
+            },
+            "Email": {
+              "type": "string"
+            },
+            "GroupId": {
+              "type": "integer"
+            },
+            "IsActive": {
+              "type": "boolean"
+            },
+            "Login": {
+              "type": "string"
+            },
+            "IsPremium": {
+              "type": "boolean"
+            },
+            "IsPremiumDemo": {
+              "type": "boolean"
+            },
+            "ExpiredPremiumDate": {
+              "type": "integer"
+            },
+            "PremiumAddons": {
+              "type": "array",
+              "items": {}
+            }
+          },
+          "required": [
+            "Id",
+            "UserId",
+            "FirstName",
+            "LastName",
+            "Email",
+            "GroupId",
+            "IsActive",
+            "Login",
+            "IsPremium",
+            "IsPremiumDemo",
+            "ExpiredPremiumDate",
+            "PremiumAddons"
+          ]
+        },
+        "Refresh": {
+          "type": "integer"
+        },
+        "User": {
+          "type": "object",
+          "properties": {
+            "FirstName": {
+              "type": "string"
+            },
+            "LastName": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "FirstName",
+            "LastName"
+          ]
+        },
+        "Class": {
+          "type": "object",
+          "properties": {
+            "Id": {
+              "type": "integer"
+            },
+            "Url": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Id",
+            "Url"
+          ]
+        }
+      },
+      "required": [
+        "Account",
+        "Refresh",
+        "User",
+        "Class"
+      ]
+    }
+  },
+  "required": [
+    "Me"
+  ]
+}
