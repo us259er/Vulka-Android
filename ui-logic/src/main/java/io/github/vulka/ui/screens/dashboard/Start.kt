@@ -93,9 +93,6 @@ fun StartScreen(
         ) {
             item {
                 HeaderCard(student)
-                Spacer(
-                    modifier = Modifier.size(5.dp)
-                )
             }
 
             item {
@@ -124,7 +121,8 @@ fun StartScreen(
 @Composable
 fun HeaderCard(student: Student) {
     Surface(
-        modifier = Modifier.fillMaxWidth().padding(3.dp),
+        modifier = Modifier.fillMaxWidth()
+            .padding(horizontal = 3.dp, vertical = 5.dp),
         shape = MaterialTheme.shapes.medium,
         color = MaterialTheme.colorScheme.surfaceContainer
     ) {
@@ -148,13 +146,42 @@ fun HeaderCard(student: Student) {
     }
 }
 
+
+@Composable
+fun LuckyCard(luckyNumber: Int,navController: NavController) {
+    Surface(
+        modifier = Modifier.padding(horizontal = 3.dp, vertical = 5.dp),
+        shape = MaterialTheme.shapes.medium,
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        onClick = {
+            navController.navigate(LuckyNumber(luckyNumber))
+        }
+    ) {
+        Row(
+            modifier = Modifier
+                .heightIn(min = 48.dp)
+                .padding(10.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconBox(Icons.Default.Star)
+
+            Text(
+                modifier = Modifier.padding(horizontal = 8.dp),
+                fontSize = 18.sp,
+                text = "${if (luckyNumber != 0) luckyNumber else stringResource(R.string.None)}"
+            )
+        }
+    }
+}
+
 @Composable
 fun GradesCard(
     userId: UUID,
     viewModel: VulkaViewModel = hiltViewModel()
 ) {
     Surface(
-        modifier = Modifier.fillMaxWidth().padding(3.dp),
+        modifier = Modifier.fillMaxWidth()
+            .padding(horizontal = 3.dp, vertical = 5.dp),
         shape = MaterialTheme.shapes.medium,
         color = MaterialTheme.colorScheme.surfaceContainer
     ) {
@@ -221,34 +248,6 @@ fun GradesCard(
                     text = stringResource(R.string.NoLatestGrades)
                 )
             }
-        }
-    }
-}
-
-
-@Composable
-fun LuckyCard(luckyNumber: Int,navController: NavController) {
-    Surface(
-        modifier = Modifier.padding(3.dp),
-        shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.surfaceContainer,
-        onClick = {
-            navController.navigate(LuckyNumber(luckyNumber))
-        }
-    ) {
-        Row(
-            modifier = Modifier
-                .heightIn(min = 48.dp)
-                .padding(10.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconBox(Icons.Default.Star)
-
-            Text(
-                modifier = Modifier.padding(horizontal = 8.dp),
-                fontSize = 18.sp,
-                text = "${if (luckyNumber != 0) luckyNumber else stringResource(R.string.None)}"
-            )
         }
     }
 }
