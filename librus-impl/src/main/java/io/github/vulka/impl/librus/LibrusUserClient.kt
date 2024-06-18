@@ -6,9 +6,12 @@ import io.github.vulka.core.api.types.Parent
 import io.github.vulka.core.api.types.Student
 import io.github.vulka.core.api.types.StudentImpl
 import io.github.vulka.impl.librus.internal.api.internalRequestClass
+import io.github.vulka.impl.librus.internal.api.internalRequestGrades
 import io.github.vulka.impl.librus.internal.api.internalRequestLuckyNumber
 import io.github.vulka.impl.librus.internal.api.internalRequestMe
+import io.github.vulka.impl.librus.internal.api.internalRequestSubjects
 import io.github.vulka.impl.librus.internal.api.internalRequestUserProfile
+import io.github.vulka.impl.librus.internal.api.internalRequestUsers
 import io.github.vulka.impl.librus.internal.api.types.UserProfile
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
@@ -64,19 +67,45 @@ class LibrusUserClient(
     }
 
     override suspend fun getGrades(student: Student): Array<Grade> {
-        val grades = ArrayList<Grade>()
-        grades.add(
-            Grade(
-                value = 1.0f,
-                weight = 1.0f,
-                name = "Stub",
-                date = "2024-04-04",
-                subjectName = "Stub",
-                subjectCode = "stub",
-                teacherName = "Stub Stub"
+        val grades = internalRequestGrades()
+//        val categories = internalRequestGradesCategories()
+        val subjects = internalRequestSubjects()
+        val teachers = internalRequestUsers()
+
+        val gradesList = ArrayList<Grade>()
+
+        for (grade in grades) {
+            val teacher = teachers.find { it.id == grade.addedBy.id }
+            val subject = subjects.find { it.id == grade.subject.id }
+
+            gradesList.add(
+                Grade(
+                    value = 1f,
+                    weight = 1.0f,
+                    name = grade.grade,
+                    date = grade.date,
+                    subjectName = subject?.name ?: "stub",
+                    subjectCode = "stub",
+                    teacherName = "${teacher?.firstName} ${teacher?.lastName}"
+                )
             )
-        )
-        return grades.toTypedArray()
+        }
+
+        return gradesList.toTypedArray()
+
+//        val grades = ArrayList<Grade>()
+//        grades.add(
+//            Grade(
+//                value = 1.0f,
+//                weight = 1.0f,
+//                name = "Stub",
+//                date = "2024-04-04",
+//                subjectName = "Stub",
+//                subjectCode = "stub",
+//                teacherName = "Stub Stub"
+//            )
+//        )
+//        return grades.toTypedArray()
     }
 }
 
