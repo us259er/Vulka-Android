@@ -8,6 +8,7 @@ import io.github.vulka.core.api.types.Student
 import io.github.vulka.core.api.types.StudentImpl
 import io.github.vulka.impl.librus.internal.api.internalRequestClass
 import io.github.vulka.impl.librus.internal.api.internalRequestGrades
+import io.github.vulka.impl.librus.internal.api.internalRequestGradesCategories
 import io.github.vulka.impl.librus.internal.api.internalRequestLuckyNumber
 import io.github.vulka.impl.librus.internal.api.internalRequestMe
 import io.github.vulka.impl.librus.internal.api.internalRequestSubjects
@@ -70,7 +71,7 @@ class LibrusUserClient(
 
     override suspend fun getGrades(student: Student): Array<Grade> {
         val grades = internalRequestGrades()
-//        val categories = internalRequestGradesCategories()
+        val categories = internalRequestGradesCategories()
         val subjects = internalRequestSubjects()
         val teachers = internalRequestUsers()
 
@@ -78,16 +79,17 @@ class LibrusUserClient(
 
         for (grade in grades) {
             val teacher = teachers.find { it.id == grade.addedBy.id }
-            val subject = subjects.find { it.id == grade.subject.id }
+            val subject = subjects.find { it.id == grade.subject.id }!!
+            val category = categories.find { it.id == grade.category.id }!!
 
             gradesList.add(
                 Grade(
-                    value = 1f,
-                    weight = 1.0f,
-                    name = grade.grade,
+                    value = Grade.Value.fromValue(grade.grade),
+                    weight = category.weight,
+                    name = category.name,
                     date = LocalDate.parse(grade.date),
-                    subjectName = subject?.name ?: "stub",
-                    subjectCode = "stub",
+                    subjectName = subject.name,
+                    subjectCode = subject.short,
                     teacherName = "${teacher?.firstName} ${teacher?.lastName}"
                 )
             )

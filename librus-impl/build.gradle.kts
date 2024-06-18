@@ -42,4 +42,5 @@ jsonSchema2Pojo {
     setAnnotationStyle("gson")
     includeHashcodeAndEquals = false
     includeToString = false
+    useDoubleNumbers = false
 }

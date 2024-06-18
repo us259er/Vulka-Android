@@ -9,7 +9,6 @@ import io.github.vulka.core.api.types.Student
 import io.github.vulka.impl.vulcan.hebe.VulcanHebeApi
 import io.github.vulka.impl.vulcan.hebe.types.HebeStudent
 import java.time.LocalDate
-import java.time.LocalTime
 import java.util.Date
 
 class VulcanUserClient(
@@ -55,7 +54,7 @@ class VulcanUserClient(
 
         for (grade in response) {
             grades.add(Grade(
-                value = grade.value,
+                value = Grade.Value.fromValue(grade.value!!),
                 weight = grade.column.weight,
                 name = grade.column.name,
                 date = LocalDate.parse(grade.dateCreated.date),
