@@ -238,7 +238,7 @@ fun GradesCard(
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
                                         Text(
-                                            text = grade.value.str,
+                                            text = grade.value?.replace("\\.0$".toRegex(), "") ?: "...",
                                             fontSize = 15.sp
                                         )
                                     }

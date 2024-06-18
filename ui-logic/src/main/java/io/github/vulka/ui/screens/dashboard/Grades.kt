@@ -150,7 +150,7 @@ fun GradesTab(
                                             .padding(vertical = 2.dp),
                                     ) {
                                         Avatar(
-                                            text = grade.value.str,
+                                            text = grade.value?.replace("\\.0$".toRegex(), "") ?: "...",
                                             shape = AvatarShape.Rounded
                                         )
                                         Column(

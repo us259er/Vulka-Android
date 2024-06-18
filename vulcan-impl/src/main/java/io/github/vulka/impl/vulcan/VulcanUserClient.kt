@@ -54,7 +54,7 @@ class VulcanUserClient(
 
         for (grade in response) {
             grades.add(Grade(
-                value = Grade.Value.fromValue(grade.value!!),
+                value = grade.content,
                 weight = grade.column.weight,
                 name = grade.column.name,
                 date = LocalDate.parse(grade.dateCreated.date),

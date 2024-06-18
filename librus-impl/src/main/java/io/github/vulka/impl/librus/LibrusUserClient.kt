@@ -84,7 +84,7 @@ class LibrusUserClient(
 
             gradesList.add(
                 Grade(
-                    value = Grade.Value.fromValue(grade.grade),
+                    value = grade.grade,
                     weight = category.weight ?: 0f,
                     name = category.name,
                     date = LocalDate.parse(grade.date),
