@@ -54,7 +54,7 @@ class VulcanUserClient(
 
         for (grade in response) {
             grades.add(Grade(
-                value = grade.content,
+                value = grade.content.replace("\\.0$".toRegex(), ""),
                 weight = grade.column.weight,
                 name = grade.column.name,
                 date = LocalDate.parse(grade.dateCreated.date),

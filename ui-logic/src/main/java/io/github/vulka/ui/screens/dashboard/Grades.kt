@@ -28,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -150,7 +151,7 @@ fun GradesTab(
                                             .padding(vertical = 2.dp),
                                     ) {
                                         Avatar(
-                                            text = grade.value?.replace("\\.0$".toRegex(), "") ?: "...",
+                                            text = grade.value ?: "",
                                             shape = AvatarShape.Rounded
                                         )
                                         Column(
@@ -165,10 +166,7 @@ fun GradesTab(
                                             )
                                             Text(
                                                 fontSize = 12.sp,
-                                                text = "${grade.date}  Waga: ${
-                                                    grade.weight.toString()
-                                                        .replace("\\.0$".toRegex(), "")
-                                                }"
+                                                text = "${grade.date}  ${stringResource(R.string.Weight)}: ${grade.weight}"
                                             )
                                         }
                                     }
@@ -176,14 +174,13 @@ fun GradesTab(
                             }
                         ) {
                             Text(subjectName)
+                            val gradesAmount = viewModel.gradesRepository.countBySubjectAndCredentials(
+                                UUID.fromString(args.userId),
+                                subjectName
+                            )
                             Text(
                                 fontSize = 12.sp,
-                                text = "${
-                                    viewModel.gradesRepository.countBySubjectAndCredentials(
-                                        UUID.fromString(args.userId),
-                                        subjectName
-                                    )
-                                } Ocen"
+                                text = "$gradesAmount ${pluralStringResource(R.plurals.GradesAmount,gradesAmount)}"
                             )
                         }
                     }

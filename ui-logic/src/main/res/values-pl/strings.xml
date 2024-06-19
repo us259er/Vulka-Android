@@ -23,4 +23,11 @@
     <string name="Summary">Podsumowanie</string>
     <string name="LatestGrades">Ostatnie oceny</string>
     <string name="NoLatestGrades">Brak ostatnich ocen</string>
+    <string name="Weight">Waga</string>
+    <plurals name="GradesAmount">
+        <item quantity="one">ocena</item>
+        <item quantity="few">oceny</item>
+        <item quantity="many">ocen</item>
+        <item quantity="other">ocen</item>
+    </plurals>
 </resources>

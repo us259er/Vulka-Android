@@ -29,4 +29,9 @@
     <string name="Summary">Summary</string>
     <string name="LatestGrades">Latest grades</string>
     <string name="NoLatestGrades">No latest grades</string>
+    <string name="Weight">Weight</string>
+    <plurals name="GradesAmount">
+        <item quantity="one">grade</item>
+        <item quantity="other">grades</item>
+    </plurals>
 </resources>
