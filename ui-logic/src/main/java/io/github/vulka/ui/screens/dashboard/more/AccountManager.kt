@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import dev.medzik.android.components.rememberMutableBoolean
+import dev.medzik.android.compose.rememberMutable
 import io.github.vulka.core.api.Platform
 import io.github.vulka.core.api.types.Student
 import io.github.vulka.ui.R
@@ -54,7 +54,7 @@ fun AccountManagerScreen(
 ) {
     val credentials = remember { mutableStateListOf(*viewModel.credentialRepository.getAll().toTypedArray()) }
 
-    var selfDelete by rememberMutableBoolean()
+    var selfDelete by rememberMutable(false)
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),

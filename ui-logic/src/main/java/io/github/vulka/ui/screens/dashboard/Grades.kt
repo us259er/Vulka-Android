@@ -33,9 +33,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import dev.medzik.android.components.rememberMutableBoolean
-import dev.medzik.android.components.ui.ExpandedIfNotEmpty
-import dev.medzik.android.components.ui.IconBox
+import dev.medzik.android.compose.rememberMutable
+import dev.medzik.android.compose.ui.ExpandedIfNotEmpty
+import dev.medzik.android.compose.ui.IconBox
 import dev.medzik.android.utils.runOnUiThread
 import io.github.vulka.core.api.Platform
 import io.github.vulka.core.api.types.Grade
@@ -200,7 +200,7 @@ fun SubjectCard(
     more: @Composable () -> Unit = {},
     content: @Composable () -> Unit
 ) {
-    var showMore by rememberMutableBoolean()
+    var showMore by rememberMutable(false)
 
     Surface(
         onClick = {

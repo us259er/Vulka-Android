@@ -25,13 +25,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import dev.medzik.android.components.TextFieldValue
-import dev.medzik.android.components.color.combineAlpha
-import dev.medzik.android.components.rememberMutableBoolean
-import dev.medzik.android.components.rememberMutableString
-import dev.medzik.android.components.ui.LoadingButton
-import dev.medzik.android.components.ui.textfield.AnimatedTextField
-import dev.medzik.android.components.ui.textfield.PasswordAnimatedTextField
+import dev.medzik.android.compose.color.combineAlpha
+import dev.medzik.android.compose.rememberMutable
+import dev.medzik.android.compose.ui.LoadingButton
+import dev.medzik.android.compose.ui.textfield.AnimatedTextField
+import dev.medzik.android.compose.ui.textfield.PasswordAnimatedTextField
+import dev.medzik.android.compose.ui.textfield.TextFieldValue
 import dev.medzik.android.utils.runOnIOThread
 import dev.medzik.android.utils.runOnUiThread
 import io.github.vulka.core.api.LoginData
@@ -62,14 +61,14 @@ fun LoginScreen(
 
     var requestData: LoginData? by remember { mutableStateOf(null) }
 
-    var loading by rememberMutableBoolean()
+    var loading by rememberMutable(false)
 
-    val vulcanSymbol = rememberMutableString()
-    val vulcanToken = rememberMutableString()
-    val vulcanPin = rememberMutableString()
+    val vulcanSymbol = rememberMutable("")
+    val vulcanToken = rememberMutable("")
+    val vulcanPin = rememberMutable("")
 
-    val librusLogin = rememberMutableString()
-    val librusPassword = rememberMutableString()
+    val librusLogin = rememberMutable("")
+    val librusPassword = rememberMutable("")
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),

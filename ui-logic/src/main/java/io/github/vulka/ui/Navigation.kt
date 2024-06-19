@@ -14,7 +14,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import dev.medzik.android.components.icons.TopAppBarBackIcon
+import dev.medzik.android.compose.icons.TopAppBarBackIcon
+import dev.medzik.android.compose.navigation.NavigationAnimations
 import io.github.vulka.core.api.Platform
 import io.github.vulka.ui.common.DefaultScaffold
 import io.github.vulka.ui.common.MediumTopAppBarWithBack

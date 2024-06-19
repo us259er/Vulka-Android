@@ -42,17 +42,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import dev.medzik.android.components.rememberMutable
-import dev.medzik.android.components.rememberMutableBoolean
-import dev.medzik.android.components.ui.DialogState
-import dev.medzik.android.components.ui.rememberDialogState
+import dev.medzik.android.compose.rememberMutable
+import dev.medzik.android.compose.ui.dialog.DialogState
+import dev.medzik.android.compose.ui.dialog.PickerDialog
+import dev.medzik.android.compose.ui.dialog.rememberDialogState
 import dev.medzik.android.utils.runOnIOThread
 import io.github.vulka.core.api.Platform
 import io.github.vulka.database.Credentials
 import io.github.vulka.ui.R
 import io.github.vulka.ui.VulkaViewModel
 import io.github.vulka.ui.common.Avatar
-import io.github.vulka.ui.common.PickerDialogWithComponents
 import io.github.vulka.ui.crypto.decryptCredentials
 import io.github.vulka.ui.screens.dashboard.more.AccountManager
 import io.github.vulka.ui.screens.dashboard.more.LuckyNumber
@@ -92,10 +91,10 @@ fun HomeScreen(
     val dialogState = rememberDialogState()
 
     // If data was synchronized when open app
-    var wasRefreshed by rememberMutableBoolean()
+    var wasRefreshed by rememberMutable(false)
 
     // If data was saved in DB and now can be safely loaded
-    var refreshed by rememberMutableBoolean(!args.firstSync)
+    var refreshed by rememberMutable(!args.firstSync)
 
     LaunchedEffect(Unit) {
         if (!wasRefreshed) {
@@ -285,7 +284,7 @@ fun SelectAccount(
 ) {
     val students = viewModel.credentialRepository.getAll()
 
-    PickerDialogWithComponents(
+    PickerDialog(
         state = state,
         title = stringResource(R.string.SelectAccount),
         items = students,
@@ -303,40 +302,7 @@ fun SelectAccount(
                 }
             }
         },
-        content = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 64.dp)
-                    .padding(10.dp),
-            ) {
-                Avatar(
-                    modifier = if (it.id == credentials.id)
-                            Modifier.border(1.dp,MaterialTheme.colorScheme.primary, RoundedCornerShape(50.dp))
-                        else
-                            Modifier,
-                    text = it.student.getInitials()
-                )
-                Column(
-                    modifier = Modifier.padding(horizontal = 10.dp)
-                ) {
-                    if (it.student.isParent) {
-                        Text(it.student.parent!!.name)
-                        Text(
-                            text = "${it.student.fullName} - ${stringResource(R.string.Parent)}",
-                            fontSize = 12.sp
-                        )
-                    } else {
-                        Text(it.student.fullName)
-                        Text(
-                            text = stringResource(R.string.Student),
-                            fontSize = 12.sp
-                        )
-                    }
-                }
-            }
-        },
-        components = {
+        trailing = {
             TextButton(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
@@ -350,5 +316,37 @@ fun SelectAccount(
                 Text(text = stringResource(R.string.ManageAccounts))
             }
         }
-    )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 64.dp)
+                .padding(10.dp),
+        ) {
+            Avatar(
+                modifier = if (it.id == credentials.id)
+                    Modifier.border(1.dp,MaterialTheme.colorScheme.primary, RoundedCornerShape(50.dp))
+                else
+                    Modifier,
+                text = it.student.getInitials()
+            )
+            Column(
+                modifier = Modifier.padding(horizontal = 10.dp)
+            ) {
+                if (it.student.isParent) {
+                    Text(it.student.parent!!.name)
+                    Text(
+                        text = "${it.student.fullName} - ${stringResource(R.string.Parent)}",
+                        fontSize = 12.sp
+                    )
+                } else {
+                    Text(it.student.fullName)
+                    Text(
+                        text = stringResource(R.string.Student),
+                        fontSize = 12.sp
+                    )
+                }
+            }
+        }
+    }
 }

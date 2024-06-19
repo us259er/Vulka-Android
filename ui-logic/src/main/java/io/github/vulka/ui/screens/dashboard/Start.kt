@@ -36,9 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import dev.medzik.android.components.rememberMutable
-import dev.medzik.android.components.rememberMutableString
-import dev.medzik.android.components.ui.IconBox
+import dev.medzik.android.compose.rememberMutable
+import dev.medzik.android.compose.ui.IconBox
 import io.github.vulka.core.api.Platform
 import io.github.vulka.core.api.types.Grade
 import io.github.vulka.core.api.types.Student
@@ -73,9 +72,6 @@ fun StartScreen(
 
     val student by rememberMutable(viewModel.credentialRepository.getById(UUID.fromString(args.userId))!!.student)
 
-    // TODO: replace with SnackBar or something similar
-    var errorText by rememberMutableString()
-
     fun updateUI() {
         luckyNumber = viewModel.luckyNumberRepository.getByCredentialsId(UUID.fromString(args.userId))?.number ?: 0
     }
@@ -107,10 +103,6 @@ fun StartScreen(
                 Spacer(
                     modifier = Modifier.size(5.dp)
                 )
-            }
-
-            item {
-                Text(text = errorText)
             }
         }
 

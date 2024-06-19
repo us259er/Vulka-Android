@@ -25,8 +25,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.google.gson.Gson
-import dev.medzik.android.components.rememberMutableBoolean
-import dev.medzik.android.components.ui.LoadingButton
+import dev.medzik.android.compose.rememberMutable
+import dev.medzik.android.compose.ui.LoadingButton
 import dev.medzik.android.utils.runOnIOThread
 import dev.medzik.android.utils.runOnUiThread
 import io.github.vulka.core.api.Platform
@@ -68,8 +68,7 @@ fun ChooseStudentsScreen(
         Platform.Librus -> LibrusUserClient(credentials as LibrusLoginCredentials)
     }
 
-    var loaded by rememberMutableBoolean()
-
+    var loaded by rememberMutable(false)
 
     val students = remember { mutableStateListOf<Student>()}
     val selectedStudents = remember { mutableStateListOf<Student>() }
@@ -101,7 +100,7 @@ fun ChooseStudentsScreen(
                 }
             }
 
-            var loading by rememberMutableBoolean()
+            var loading by rememberMutable(false)
 
             LoadingButton(
                 onClick = {
